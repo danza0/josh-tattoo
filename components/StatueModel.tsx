@@ -1,16 +1,29 @@
 "use client";
 
 import { Suspense, useMemo, useRef, useEffect } from "react";
-import { Canvas, useThree, useFrame } from "@react-three/fiber";
-import { useGLTF, Environment, Center } from "@react-three/drei";
+import { useThree, useFrame } from "@react-three/fiber";
+import { useGLTF, Center } from "@react-three/drei";
 import * as THREE from "three";
+import dynamic from "next/dynamic";
+
+// Dynamically import Canvas and Environment to ensure they only run on the client
+const Canvas = dynamic(() => import("@react-three/fiber").then((mod) => mod.Canvas), { 
+  ssr: false,
+  loading: () => <div style={{ width: "100%", height: "100%", background: "#1a1815" }} />
+});
+
+const Environment = dynamic(() => import("@react-three/drei").then((mod) => mod.Environment), { 
+  ssr: false 
+});
 
 const MODEL_PATH = `/models/${encodeURIComponent("Hercules Bust.glb")}`;
 
 function Spinner() {
   const ref = useRef<THREE.Mesh>(null!);
   useFrame((_, delta) => {
-    ref.current.rotation.z += delta * 1.5;
+    if (ref.current) {
+      ref.current.rotation.z += delta * 1.5;
+    }
   });
   return (
     <mesh ref={ref}>
@@ -65,7 +78,7 @@ function Model({ autoRotate }: ModelProps) {
   );
 }
 
-useGLTF.preload(MODEL_PATH);
+// useGLTF.preload(MODEL_PATH); // Disabled to avoid SSR issues during build
 
 export interface StatueModelProps {
   autoRotate?: boolean;
