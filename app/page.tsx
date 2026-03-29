@@ -8,11 +8,15 @@ import dynamic from "next/dynamic";
 
 // Layout components (not lazy — needed immediately)
 import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
 import SmoothScroll from "@/components/SmoothScroll";
 
+// Hero and StatueSection both contain (or wrap) R3F code, so they must be
+// loaded with ssr: false to prevent any server-side evaluation of the R3F
+// module graph and avoid the ReactCurrentOwner context conflict.
+const Hero = dynamic(() => import("@/components/Hero"), { ssr: false });
+const StatueSection = dynamic(() => import("@/components/StatueSection"), { ssr: false });
+
 // Lazy-loaded below-fold sections
-const StatueSection = dynamic(() => import("@/components/StatueSection"));
 const Marquee = dynamic(() => import("@/components/Marquee"));
 const Portfolio = dynamic(() => import("@/components/Portfolio"));
 const BookingCTA = dynamic(() => import("@/components/BookingCTA"));
