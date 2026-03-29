@@ -8,14 +8,8 @@
  */
 
 import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
+import StatueModel from "./StatueModel";
 import CanvasErrorBoundary from "./CanvasErrorBoundary";
-
-// Loaded dynamically to avoid SSR breakage (Canvas uses browser APIs)
-const StatueModel = dynamic(() => import("./StatueModel"), {
-  ssr: false,
-  loading: () => <div style={{ width: "100%", height: "100%" }} />,
-});
 
 export default function Hero() {
   return (
