@@ -2,12 +2,16 @@
 
 /**
  * Hero — Full-viewport hero section.
- * Giant "JOSH SWID" headline sits BEHIND a centred 3D statue placeholder.
+ * Giant "JOSH SWID" headline sits BEHIND a centred 3D statue model.
  * Ambient bottom-left/right text and a scroll indicator complete the layout.
  * Fades in on mount via Framer Motion.
  */
 
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
+
+// Loaded dynamically to avoid SSR breakage (Canvas uses browser APIs)
+const StatueModel = dynamic(() => import("./StatueModel"), { ssr: false });
 
 export default function Hero() {
   return (
@@ -32,7 +36,7 @@ export default function Hero() {
         </h1>
       </motion.div>
 
-      {/* ── 3D Statue placeholder (sits in front of text) ── */}
+      {/* ── 3D Statue (sits in front of text) ── */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -40,48 +44,9 @@ export default function Hero() {
         className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
       >
         <div
-          className="relative flex flex-col items-center justify-center"
           style={{ width: "clamp(180px, 28vw, 420px)", height: "clamp(300px, 50vw, 700px)" }}
         >
-          {/* Statue silhouette shape */}
-          <div
-            className="w-full h-full flex flex-col items-center justify-center rounded-t-[50%] rounded-b-[20%]"
-            style={{
-              background:
-                "linear-gradient(160deg, #2a2826 0%, #1a1815 50%, #0e0d0c 100%)",
-              boxShadow:
-                "0 0 80px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08)",
-            }}
-          >
-            {/* Subtle bust silhouette lines */}
-            <div className="flex flex-col items-center gap-3 opacity-20">
-              {/* Head oval */}
-              <div className="w-16 h-20 rounded-full border border-white/40" />
-              {/* Neck */}
-              <div className="w-8 h-8 border-x border-white/40" />
-              {/* Shoulder span */}
-              <div className="w-36 h-px border-t border-white/40" />
-            </div>
-
-            {/* Label */}
-            <p
-              className="mt-6 text-white/40 uppercase tracking-[0.3em] text-xs font-body font-medium"
-              style={{ fontSize: "0.6rem" }}
-            >
-              3D STATUE
-            </p>
-          </div>
-
-          {/* Glow effect beneath statue */}
-          <div
-            className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded-full"
-            style={{
-              width: "70%",
-              height: "40px",
-              background: "rgba(0,0,0,0.18)",
-              filter: "blur(18px)",
-            }}
-          />
+          <StatueModel autoRotate style={{ width: "100%", height: "100%" }} />
         </div>
       </motion.div>
 

@@ -2,14 +2,17 @@
 
 /**
  * StatueSection — Scroll-driven sticky section.
- * The statue placeholder stays fixed while content (About, Philosophy,
- * Sidenote) fades in at different scroll positions using Framer Motion's
- * useScroll + useTransform.
+ * The statue stays fixed while content (About, Philosophy, Sidenote) fades in
+ * at different scroll positions using Framer Motion's useScroll + useTransform.
+ * The 3D model's container is CSS-transformed by the same motion values.
  * Section height = 300vh to allow enough scroll room.
  */
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import dynamic from "next/dynamic";
+
+const StatueModel = dynamic(() => import("./StatueModel"), { ssr: false });
 
 export default function StatueSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -43,31 +46,17 @@ export default function StatueSection() {
       {/* Sticky viewport container */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
 
-        {/* ── Statue placeholder (centred, sticky) ── */}
+        {/* ── 3D Statue (centred, sticky, rotates/scales on scroll) ── */}
         <motion.div
           style={{ rotate: statueRotate, scale: statueScale }}
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
         >
-          <div
-            className="flex flex-col items-center justify-center rounded-t-[50%] rounded-b-[20%] relative"
+          <StatueModel
             style={{
               width: "clamp(180px, 22vw, 360px)",
               height: "clamp(300px, 45vw, 620px)",
-              background:
-                "linear-gradient(160deg, #2a2826 0%, #1a1815 50%, #0e0d0c 100%)",
-              boxShadow:
-                "0 20px 80px 10px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)",
             }}
-          >
-            <div className="flex flex-col items-center gap-3 opacity-15">
-              <div className="w-14 h-18 rounded-full border border-white/40" />
-              <div className="w-7 h-7 border-x border-white/40" />
-              <div className="w-32 h-px border-t border-white/40" />
-            </div>
-            <p className="mt-4 text-white/30 uppercase tracking-[0.35em] font-body" style={{ fontSize: "0.55rem" }}>
-              3D STATUE
-            </p>
-          </div>
+          />
         </motion.div>
 
         {/* ── ABOUT text — appears left side ── */}
