@@ -12,7 +12,7 @@ import Hero from "@/components/Hero";
 import SmoothScroll from "@/components/SmoothScroll";
 
 // Lazy-loaded below-fold sections
-const StatueSection = dynamic(() => import("@/components/StatueSection"), { ssr: false });
+const StatueSection = dynamic(() => import("@/components/StatueSection"));
 const Marquee = dynamic(() => import("@/components/Marquee"));
 const Portfolio = dynamic(() => import("@/components/Portfolio"));
 const BookingCTA = dynamic(() => import("@/components/BookingCTA"));
