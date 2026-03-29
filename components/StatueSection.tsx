@@ -10,13 +10,8 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import dynamic from "next/dynamic";
+import StatueModel from "./StatueModel";
 import CanvasErrorBoundary from "./CanvasErrorBoundary";
-
-const StatueModel = dynamic(() => import("./StatueModel"), {
-  ssr: false,
-  loading: () => <div style={{ width: "100%", height: "100%" }} />,
-});
 
 export default function StatueSection() {
   const containerRef = useRef<HTMLDivElement>(null);
