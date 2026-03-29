@@ -9,9 +9,13 @@
 
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
+import CanvasErrorBoundary from "./CanvasErrorBoundary";
 
 // Loaded dynamically to avoid SSR breakage (Canvas uses browser APIs)
-const StatueModel = dynamic(() => import("./StatueModel"), { ssr: false });
+const StatueModel = dynamic(() => import("./StatueModel"), {
+  ssr: false,
+  loading: () => <div style={{ width: "100%", height: "100%" }} />,
+});
 
 export default function Hero() {
   return (
@@ -46,7 +50,9 @@ export default function Hero() {
         <div
           style={{ width: "clamp(180px, 28vw, 420px)", height: "clamp(300px, 50vw, 700px)" }}
         >
-          <StatueModel autoRotate style={{ width: "100%", height: "100%" }} />
+          <CanvasErrorBoundary>
+            <StatueModel autoRotate style={{ width: "100%", height: "100%" }} />
+          </CanvasErrorBoundary>
         </div>
       </motion.div>
 

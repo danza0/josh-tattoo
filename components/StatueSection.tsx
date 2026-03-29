@@ -11,8 +11,12 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import dynamic from "next/dynamic";
+import CanvasErrorBoundary from "./CanvasErrorBoundary";
 
-const StatueModel = dynamic(() => import("./StatueModel"), { ssr: false });
+const StatueModel = dynamic(() => import("./StatueModel"), {
+  ssr: false,
+  loading: () => <div style={{ width: "100%", height: "100%" }} />,
+});
 
 export default function StatueSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -51,12 +55,14 @@ export default function StatueSection() {
           style={{ rotate: statueRotate, scale: statueScale }}
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
         >
-          <StatueModel
-            style={{
-              width: "clamp(180px, 22vw, 360px)",
-              height: "clamp(300px, 45vw, 620px)",
-            }}
-          />
+          <CanvasErrorBoundary>
+            <StatueModel
+              style={{
+                width: "clamp(180px, 22vw, 360px)",
+                height: "clamp(300px, 45vw, 620px)",
+              }}
+            />
+          </CanvasErrorBoundary>
         </motion.div>
 
         {/* ── ABOUT text — appears left side ── */}
