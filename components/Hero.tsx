@@ -1,15 +1,7 @@
 "use client";
 
-/**
- * Hero — Full-viewport hero section.
- * Giant "JOSH SWID" headline sits BEHIND a centred 3D statue model.
- * Ambient bottom-left/right text and a scroll indicator complete the layout.
- * Fades in on mount via Framer Motion.
- */
-
 import { motion } from "framer-motion";
 import StatueModel from "./StatueModel";
-import CanvasErrorBoundary from "./CanvasErrorBoundary";
 
 export default function Hero() {
   return (
@@ -17,7 +9,7 @@ export default function Hero() {
       id="hero"
       className="relative w-full h-screen overflow-hidden bg-bg-stone flex flex-col"
     >
-      {/* ── Giant hero headline (behind the statue) ── */}
+      {/* Giant hero headline (behind the statue) */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -34,7 +26,7 @@ export default function Hero() {
         </h1>
       </motion.div>
 
-      {/* ── 3D Statue (sits in front of text) ── */}
+      {/* 3D Statue (sits in front of text) */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -44,13 +36,11 @@ export default function Hero() {
         <div
           style={{ width: "clamp(180px, 28vw, 420px)", height: "clamp(300px, 50vw, 700px)" }}
         >
-          <CanvasErrorBoundary>
-            <StatueModel autoRotate style={{ width: "100%", height: "100%" }} />
-          </CanvasErrorBoundary>
+          <StatueModel autoRotate style={{ width: "100%", height: "100%" }} />
         </div>
       </motion.div>
 
-      {/* ── Bottom-left credit text ── */}
+      {/* Bottom-left credit text */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -64,7 +54,7 @@ export default function Hero() {
         </p>
       </motion.div>
 
-      {/* ── Bottom-right scroll indicator ── */}
+      {/* Bottom-right scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -74,7 +64,6 @@ export default function Hero() {
         <p className="text-text-primary/60 text-xs tracking-widest uppercase font-body">
           KEEP SCROLLING
         </p>
-        {/* Animated arrow */}
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
@@ -95,3 +84,4 @@ export default function Hero() {
     </section>
   );
 }
+
