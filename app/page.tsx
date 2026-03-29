@@ -10,11 +10,10 @@ import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import SmoothScroll from "@/components/SmoothScroll";
 
-// Hero and StatueSection both contain (or wrap) R3F code, so they must be
-// loaded with ssr: false to prevent any server-side evaluation of the R3F
-// module graph and avoid the ReactCurrentOwner context conflict.
-const Hero = dynamic(() => import("@/components/Hero"), { ssr: false });
-const StatueSection = dynamic(() => import("@/components/StatueSection"), { ssr: false });
+// Hero and StatueSection both contain (or wrap) R3F code.
+// In Next.js 15, `ssr: false` is only permitted inside Client Components.
+// ClientSections is a "use client" file that wraps these two with ssr: false.
+import { Hero, StatueSection } from "@/components/ClientSections";
 
 // Lazy-loaded below-fold sections
 const Marquee = dynamic(() => import("@/components/Marquee"));
