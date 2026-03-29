@@ -9,7 +9,7 @@
 
 import { Suspense, useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useGLTF, Environment, Center } from "@react-three/drei";
+import { useGLTF, Environment, Center, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
 const MODEL_PATH = `/models/${encodeURIComponent("Hercules Bust.glb")}`;
@@ -35,7 +35,6 @@ interface ModelProps {
 }
 
 function Model({ autoRotate, scale }: ModelProps) {
-  const groupRef = useRef<THREE.Group>(null!);
   const { scene } = useGLTF(MODEL_PATH);
 
   // useGLTF caches the parsed GLTF internally, so the 21 MB file is only
@@ -43,18 +42,20 @@ function Model({ autoRotate, scale }: ModelProps) {
   // own their own Object3D hierarchy (Three.js forbids two parents).
   const clonedScene = useMemo(() => scene.clone(true), [scene]);
 
-  useFrame((_, delta) => {
-    if (autoRotate && groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.25;
-    }
-  });
-
   return (
-    <group ref={groupRef} scale={scale}>
-      <Center>
-        <primitive object={clonedScene} />
-      </Center>
-    </group>
+    <>
+      <OrbitControls
+        enableZoom={false}
+        enablePan={false}
+        autoRotate={autoRotate}
+        autoRotateSpeed={0.5}
+      />
+      <group scale={scale}>
+        <Center>
+          <primitive object={clonedScene} />
+        </Center>
+      </group>
+    </>
   );
 }
 
@@ -71,13 +72,13 @@ export interface StatueModelProps {
 
 export default function StatueModel({
   autoRotate = false,
-  scale = 1,
+  scale = 0.5,
   className,
   style,
 }: StatueModelProps) {
   return (
     <Canvas
-      camera={{ position: [0, 0.5, 4], fov: 40 }}
+      camera={{ position: [0, 1.5, 8], fov: 50 }}
       gl={{ alpha: true, antialias: true }}
       className={className}
       style={{ background: "transparent", ...style }}
