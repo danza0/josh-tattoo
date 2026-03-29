@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
+import type { Group } from "three";
 
 export interface StatueModelProps {
   autoRotate?: boolean;
@@ -74,8 +75,8 @@ export default function StatueModel({
         const loader = new GLTFLoader();
         const MODEL_PATH = `/models/${encodeURIComponent("Hercules Bust.glb")}`;
 
-        const gltf = await new Promise<{ scene: THREE.Group }>((resolve, reject) => {
-          loader.load(MODEL_PATH, (g) => resolve(g as unknown as { scene: THREE.Group }), undefined, reject);
+        const gltf = await new Promise<{ scene: Group }>((resolve, reject) => {
+          loader.load(MODEL_PATH, (g) => resolve(g as unknown as { scene: Group }), undefined, reject);
         });
 
         if (disposed) {
