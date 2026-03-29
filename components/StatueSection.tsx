@@ -1,17 +1,8 @@
 "use client";
 
-/**
- * StatueSection — Scroll-driven sticky section.
- * The statue stays fixed while content (About, Philosophy, Sidenote) fades in
- * at different scroll positions using Framer Motion's useScroll + useTransform.
- * The 3D model's container is CSS-transformed by the same motion values.
- * Section height = 300vh to allow enough scroll room.
- */
-
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import StatueModel from "./StatueModel";
-import CanvasErrorBoundary from "./CanvasErrorBoundary";
 
 export default function StatueSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -21,7 +12,6 @@ export default function StatueSection() {
     offset: ["start start", "end end"],
   });
 
-  // Content opacity/position at different scroll points
   const aboutOpacity = useTransform(scrollYProgress, [0, 0.15, 0.35, 0.5], [0, 1, 1, 0]);
   const aboutY = useTransform(scrollYProgress, [0, 0.15], ["40px", "0px"]);
 
@@ -31,7 +21,6 @@ export default function StatueSection() {
   const philosophyOpacity = useTransform(scrollYProgress, [0.6, 0.75, 0.9, 1], [0, 1, 1, 0]);
   const philosophyY = useTransform(scrollYProgress, [0.6, 0.75], ["40px", "0px"]);
 
-  // Subtle statue rotation (simulated with CSS rotate)
   const statueRotate = useTransform(scrollYProgress, [0, 1], ["0deg", "8deg"]);
   const statueScale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.04, 1]);
 
@@ -42,25 +31,22 @@ export default function StatueSection() {
       className="relative bg-bg-stone"
       style={{ height: "300vh" }}
     >
-      {/* Sticky viewport container */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
 
-        {/* ── 3D Statue (centred, sticky, rotates/scales on scroll) ── */}
+        {/* 3D Statue */}
         <motion.div
           style={{ rotate: statueRotate, scale: statueScale }}
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
         >
-          <CanvasErrorBoundary>
-            <StatueModel
-              style={{
-                width: "clamp(180px, 22vw, 360px)",
-                height: "clamp(300px, 45vw, 620px)",
-              }}
-            />
-          </CanvasErrorBoundary>
+          <StatueModel
+            style={{
+              width: "clamp(180px, 22vw, 360px)",
+              height: "clamp(300px, 45vw, 620px)",
+            }}
+          />
         </motion.div>
 
-        {/* ── ABOUT text — appears left side ── */}
+        {/* ABOUT text */}
         <motion.div
           style={{ opacity: aboutOpacity, y: aboutY }}
           className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 max-w-xs z-20"
@@ -77,7 +63,7 @@ export default function StatueSection() {
           </p>
         </motion.div>
 
-        {/* ── Sidenote tooltip — appears bottom-right ── */}
+        {/* Sidenote tooltip */}
         <motion.div
           style={{ opacity: sidenoteOpacity, y: sidenoteY }}
           className="absolute right-6 md:right-12 bottom-16 max-w-[260px] z-20"
@@ -96,7 +82,7 @@ export default function StatueSection() {
           </div>
         </motion.div>
 
-        {/* ── Philosophy text — appears right side ── */}
+        {/* Philosophy text */}
         <motion.div
           style={{ opacity: philosophyOpacity, y: philosophyY }}
           className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 max-w-xs z-20"
@@ -114,3 +100,4 @@ export default function StatueSection() {
     </section>
   );
 }
+
