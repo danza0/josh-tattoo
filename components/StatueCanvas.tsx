@@ -120,5 +120,7 @@ export default function StatueCanvas({
   );
 }
 
-// Preload the model for better performance (safe — only runs in browser)
-useGLTF.preload(MODEL_PATH);
+// Preload only in browser
+if (typeof window !== "undefined") {
+  useGLTF.preload(MODEL_PATH);
+}
