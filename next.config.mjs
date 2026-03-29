@@ -1,18 +1,18 @@
-import { createRequire } from "module";
 import path from "path";
+import { fileURLToPath } from "url";
 
-const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        react: path.dirname(require.resolve("react/package.json")),
-        "react-dom": path.dirname(require.resolve("react-dom/package.json")),
-      };
-    }
+  transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      react: path.resolve(__dirname, "node_modules/react"),
+      "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+    };
     return config;
   },
 };
