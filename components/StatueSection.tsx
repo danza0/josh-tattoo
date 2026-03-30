@@ -21,9 +21,6 @@ export default function StatueSection() {
   const philosophyOpacity = useTransform(scrollYProgress, [0.6, 0.75, 0.9, 1], [0, 1, 1, 0]);
   const philosophyY = useTransform(scrollYProgress, [0.6, 0.75], ["40px", "0px"]);
 
-  const statueRotate = useTransform(scrollYProgress, [0, 1], ["0deg", "8deg"]);
-  const statueScale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.04, 1]);
-
   return (
     <section
       id="about"
@@ -33,18 +30,16 @@ export default function StatueSection() {
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
 
-        {/* 3D Statue */}
-        <motion.div
-          style={{ rotate: statueRotate, scale: statueScale }}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
+        {/* Scroll-driven video bust — scrubs 0→5s as section scrolls */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
+          style={{ width: "clamp(240px, 50vw, 720px)" }}
         >
           <StatueModel
-            style={{
-              width: "clamp(180px, 22vw, 360px)",
-              height: "clamp(300px, 45vw, 620px)",
-            }}
+            autoRotate={false}
+            scrollYProgress={scrollYProgress}
+            style={{ width: "100%" }}
           />
-        </motion.div>
+        </div>
 
         {/* ABOUT text */}
         <motion.div
