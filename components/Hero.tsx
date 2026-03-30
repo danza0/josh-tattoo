@@ -26,17 +26,15 @@ export default function Hero() {
         </h1>
       </motion.div>
 
-      {/* 3D Statue (sits in front of text) */}
+      {/* Video bust (sits in front of text, auto-plays and loops in hero) */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
         className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
       >
-        <div
-          style={{ width: "clamp(180px, 28vw, 420px)", height: "clamp(300px, 50vw, 700px)" }}
-        >
-          <StatueModel autoRotate style={{ width: "100%", height: "100%" }} />
+        <div style={{ width: "clamp(280px, 60vw, 900px)" }}>
+          <StatueModel autoRotate style={{ width: "100%" }} />
         </div>
       </motion.div>
 
