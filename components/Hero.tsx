@@ -1,15 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import StatueModel from "./StatueModel";
 
 export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative w-full h-screen overflow-hidden bg-bg-stone flex flex-col"
+      className="relative w-full h-screen overflow-hidden flex flex-col z-10"
     >
-      {/* Giant hero headline (behind the statue) */}
+      {/*
+        z-10 on this section keeps the headline and indicators above the full-screen
+        StatueSection video (z-0), which underlaps here via marginTop: "-100vh".
+        No bg-bg-stone — the body background shows through so the video is visible.
+      */}
+      {/* Hero headline */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -24,18 +28,6 @@ export default function Hero() {
           <br />
           SWID
         </h1>
-      </motion.div>
-
-      {/* Video bust (sits in front of text, auto-plays and loops in hero) */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
-        className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
-      >
-        <div style={{ width: "clamp(280px, 60vw, 900px)" }}>
-          <StatueModel autoRotate style={{ width: "100%" }} />
-        </div>
       </motion.div>
 
       {/* Bottom-left credit text */}

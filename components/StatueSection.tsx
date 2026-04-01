@@ -12,32 +12,38 @@ export default function StatueSection() {
     offset: ["start start", "end end"],
   });
 
-  const aboutOpacity = useTransform(scrollYProgress, [0, 0.15, 0.35, 0.5], [0, 1, 1, 0]);
-  const aboutY = useTransform(scrollYProgress, [0, 0.15], ["40px", "0px"]);
+  // Video scrubs only after the hero has scrolled past (from 1/3 of total progress to end),
+  // giving ~200vh of effective scroll distance for the 4-second video.
+  // HERO_OVERLAP_RATIO matches the 100vh overlap set by `marginTop: "-100vh"` on the 400vh section:
+  // 100vh / (400vh - 100vh viewport) = 1/3.
+  const HERO_OVERLAP_RATIO = 1 / 3;
+  const videoProgress = useTransform(scrollYProgress, [HERO_OVERLAP_RATIO, 1], [0, 1]);
 
-  const sidenoteOpacity = useTransform(scrollYProgress, [0.3, 0.45, 0.65, 0.75], [0, 1, 1, 0]);
-  const sidenoteY = useTransform(scrollYProgress, [0.3, 0.45], ["30px", "0px"]);
+  // Text overlay keyframes remapped to the 0.33–1.0 active range
+  const aboutOpacity = useTransform(scrollYProgress, [0.33, 0.43, 0.57, 0.67], [0, 1, 1, 0]);
+  const aboutY = useTransform(scrollYProgress, [0.33, 0.43], ["40px", "0px"]);
 
-  const philosophyOpacity = useTransform(scrollYProgress, [0.6, 0.75, 0.9, 1], [0, 1, 1, 0]);
-  const philosophyY = useTransform(scrollYProgress, [0.6, 0.75], ["40px", "0px"]);
+  const sidenoteOpacity = useTransform(scrollYProgress, [0.53, 0.63, 0.77, 0.83], [0, 1, 1, 0]);
+  const sidenoteY = useTransform(scrollYProgress, [0.53, 0.63], ["30px", "0px"]);
+
+  const philosophyOpacity = useTransform(scrollYProgress, [0.73, 0.83, 0.93, 1], [0, 1, 1, 0]);
+  const philosophyY = useTransform(scrollYProgress, [0.73, 0.83], ["40px", "0px"]);
 
   return (
     <section
       id="about"
       ref={containerRef}
       className="relative bg-bg-stone"
-      style={{ height: "300vh" }}
+      style={{ height: "400vh", marginTop: "-100vh" }}
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-        {/* Scroll-driven video bust — scrubs 0→5s as section scrolls */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
-          style={{ width: "clamp(240px, 50vw, 720px)" }}
-        >
+        {/* Full-screen scroll-driven video bust */}
+        <div className="absolute inset-0 z-0">
           <StatueModel
             autoRotate={false}
-            scrollYProgress={scrollYProgress}
-            style={{ width: "100%" }}
+            scrollYProgress={videoProgress}
+            style={{ width: "100%", height: "100%" }}
           />
         </div>
 

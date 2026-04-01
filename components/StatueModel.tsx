@@ -23,15 +23,23 @@ export default function StatueModel({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Scroll-driven scrubbing: update video.currentTime when scrollYProgress changes
+  // Scroll-driven scrubbing with RAF throttling to prevent paint stalls
   useEffect(() => {
     if (autoRotate || !scrollYProgress) return;
-    const unsubscribe = scrollYProgress.on("change", (progress: number) => {
-      if (videoRef.current && isLoaded) {
-        videoRef.current.currentTime = progress * VIDEO_DURATION;
-      }
+    let rafId: number | null = null;
+    const unsubscribe = scrollYProgress.on("change", () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        if (videoRef.current && isLoaded) {
+          videoRef.current.currentTime = scrollYProgress.get() * VIDEO_DURATION;
+        }
+        rafId = null;
+      });
     });
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, [autoRotate, scrollYProgress, isLoaded]);
 
   return (
@@ -40,7 +48,7 @@ export default function StatueModel({
       style={{
         position: "relative",
         width: "100%",
-        aspectRatio: "16 / 9",
+        height: "100%",
         overflow: "hidden",
         ...style,
       }}
@@ -60,13 +68,13 @@ export default function StatueModel({
         ref={videoRef}
         muted
         playsInline
-        preload="metadata"
+        preload="auto"
         autoPlay={autoRotate}
         loop={autoRotate}
         style={{
           width: "100%",
           height: "100%",
-          objectFit: "contain",
+          objectFit: "cover",
           background: "transparent",
           opacity: isLoaded ? 1 : 0,
         }}
