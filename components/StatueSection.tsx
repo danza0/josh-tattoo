@@ -7,17 +7,14 @@ import StatueModel from "./StatueModel";
 export default function StatueSection() {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Local scroll for text overlays (keyed to the container's own scroll progress)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Video scrubs only after the hero has scrolled past (from 1/3 of total progress to end),
-  // giving ~200vh of effective scroll distance for the 4-second video.
-  // HERO_OVERLAP_RATIO matches the 100vh overlap set by `marginTop: "-100vh"` on the 400vh section:
-  // 100vh / (400vh - 100vh viewport) = 1/3.
-  const HERO_OVERLAP_RATIO = 1 / 3;
-  const videoProgress = useTransform(scrollYProgress, [HERO_OVERLAP_RATIO, 1], [0, 1]);
+  // Global window scroll so the video starts scrubbing from the very first scroll event
+  const { scrollYProgress: videoProgress } = useScroll();
 
   // Text overlay keyframes remapped to the 0.33–1.0 active range
   const aboutOpacity = useTransform(scrollYProgress, [0.33, 0.43, 0.57, 0.67], [0, 1, 1, 0]);
