@@ -23,23 +23,16 @@ export default function StatueModel({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Scroll-driven scrubbing with RAF throttling to prevent paint stalls
+  // Scroll-driven scrubbing — update currentTime on every change event so no
+  // frames are dropped and the animation stays smooth with Lenis scrolling.
   useEffect(() => {
     if (autoRotate || !scrollYProgress) return;
-    let rafId: number | null = null;
-    const unsubscribe = scrollYProgress.on("change", () => {
-      if (rafId !== null) return;
-      rafId = requestAnimationFrame(() => {
-        if (videoRef.current && isLoaded) {
-          videoRef.current.currentTime = scrollYProgress.get() * VIDEO_DURATION;
-        }
-        rafId = null;
-      });
+    const unsubscribe = scrollYProgress.on("change", (v) => {
+      if (videoRef.current && isLoaded) {
+        videoRef.current.currentTime = v * VIDEO_DURATION;
+      }
     });
-    return () => {
-      unsubscribe();
-      if (rafId !== null) cancelAnimationFrame(rafId);
-    };
+    return unsubscribe;
   }, [autoRotate, scrollYProgress, isLoaded]);
 
   return (

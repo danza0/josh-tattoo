@@ -18,15 +18,13 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.4, ease: "easeOut" }}
-        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0"
+        className="absolute inset-x-0 bottom-0 flex items-end justify-center pointer-events-none select-none z-0 pb-6"
       >
         <h1
-          className="hero-headline text-center text-text-primary leading-none"
-          style={{ fontSize: "clamp(4rem, 14vw, 16rem)", letterSpacing: "-0.04em" }}
+          className="hero-headline text-center text-text-primary leading-none w-full"
+          style={{ fontSize: "clamp(2rem, 15vw, 22rem)", letterSpacing: "-0.04em" }}
         >
-          JOSH
-          <br />
-          SWID
+          JOSH SWID
         </h1>
       </motion.div>
 
