@@ -13,6 +13,9 @@ export default function StatueSection() {
     offset: ["start start", "end end"],
   });
 
+  // Scroll-driven Y-axis rotation for the video container (GPU-accelerated CSS transform)
+  const rotateY = useTransform(scrollYProgress, [0, 0.5, 1], ["-20deg", "0deg", "20deg"]);
+
   // Text overlay keyframes remapped to the 0.33–1.0 active range
   const aboutOpacity = useTransform(scrollYProgress, [0.33, 0.43, 0.57, 0.67], [0, 1, 1, 0]);
   const aboutY = useTransform(scrollYProgress, [0.33, 0.43], ["40px", "0px"]);
@@ -32,11 +35,23 @@ export default function StatueSection() {
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-        {/* Full-screen autoplay video bust */}
-        <div className="absolute inset-0 z-0">
-          <StatueModel
-            style={{ width: "100%", height: "100%" }}
-          />
+        {/* Full-screen autoplay video bust — rotates on scroll via CSS rotateY */}
+        <div
+          className="absolute inset-0 z-0"
+          style={{ perspective: "1200px" }}
+        >
+          <motion.div
+            style={{
+              rotateY,
+              width: "100%",
+              height: "100%",
+              transformStyle: "preserve-3d",
+            }}
+          >
+            <StatueModel
+              style={{ width: "100%", height: "100%" }}
+            />
+          </motion.div>
         </div>
 
         {/* ABOUT text */}
