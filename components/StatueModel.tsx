@@ -58,7 +58,6 @@ export default function StatueModel({
 
       <video
         ref={videoRef}
-        src="/video/hero-bust.mp4"
         muted
         playsInline
         preload="metadata"
@@ -67,11 +66,16 @@ export default function StatueModel({
         style={{
           width: "100%",
           height: "100%",
-          objectFit: "cover",
+          objectFit: "contain",
+          background: "transparent",
           opacity: isLoaded ? 1 : 0,
         }}
         onLoadedMetadata={() => setIsLoaded(true)}
-      />
+      >
+        <source src="/videos/hercules-bust.webm" type="video/webm" />
+        <source src="/videos/hercules-bust.mp4" type="video/mp4" />
+        Your browser does not support the video element.
+      </video>
     </div>
   );
 }
