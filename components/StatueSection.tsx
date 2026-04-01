@@ -13,9 +13,6 @@ export default function StatueSection() {
     offset: ["start start", "end end"],
   });
 
-  // Global window scroll so the video starts scrubbing from the very first scroll event
-  const { scrollYProgress: videoProgress } = useScroll();
-
   // Text overlay keyframes remapped to the 0.33–1.0 active range
   const aboutOpacity = useTransform(scrollYProgress, [0.33, 0.43, 0.57, 0.67], [0, 1, 1, 0]);
   const aboutY = useTransform(scrollYProgress, [0.33, 0.43], ["40px", "0px"]);
@@ -35,11 +32,9 @@ export default function StatueSection() {
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-        {/* Full-screen scroll-driven video bust */}
+        {/* Full-screen autoplay video bust */}
         <div className="absolute inset-0 z-0">
           <StatueModel
-            autoRotate={false}
-            scrollYProgress={videoProgress}
             style={{ width: "100%", height: "100%" }}
           />
         </div>
