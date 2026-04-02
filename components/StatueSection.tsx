@@ -1,4 +1,4 @@
-use client";
+"use client";
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -12,11 +12,9 @@ export default function StatueSection() {
     offset: ["start start", "end end"],
   });
 
-  // Frame sequence starts after hero overlap (first 1/3 is hero overlapping)
   const HERO_OVERLAP_RATIO = 1 / 3;
   const frameProgress = useTransform(scrollYProgress, [HERO_OVERLAP_RATIO, 1], [0, 1]);
 
-  // Text overlay keyframes remapped to the 0.33-1.0 active range
   const aboutOpacity = useTransform(scrollYProgress, [0.33, 0.43, 0.57, 0.67], [0, 1, 1, 0]);
   const aboutY = useTransform(scrollYProgress, [0.33, 0.43], ["40px", "0px"]);
 
@@ -35,7 +33,6 @@ export default function StatueSection() {
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-        {/* Full-screen scroll-driven image sequence bust — z-10 to render IN FRONT of hero headline */}
         <div className="absolute inset-0 z-10">
           <StatueModel
             scrollYProgress={frameProgress}
@@ -43,7 +40,6 @@ export default function StatueSection() {
           />
         </div>
 
-        {/* ABOUT text */}
         <motion.div
           style={{ opacity: aboutOpacity, y: aboutY }}
           className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 max-w-xs z-20"
@@ -60,7 +56,6 @@ export default function StatueSection() {
           </p>
         </motion.div>
 
-        {/* Sidenote tooltip */}
         <motion.div
           style={{ opacity: sidenoteOpacity, y: sidenoteY }}
           className="absolute right-6 md:right-12 bottom-16 max-w-[260px] z-20"
@@ -79,7 +74,6 @@ export default function StatueSection() {
           </div>
         </motion.div>
 
-        {/* Philosophy text */}
         <motion.div
           style={{ opacity: philosophyOpacity, y: philosophyY }}
           className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 max-w-xs z-20"
