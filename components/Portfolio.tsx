@@ -2,22 +2,23 @@
 
 /**
  * Portfolio — "THE WORK." section.
- * Asymmetric masonry-style grid of placeholder boxes.
+ * Asymmetric masonry-style grid of real tattoo images.
  * Hover: scale + overlay. Scroll reveal via Framer Motion whileInView.
  */
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 
-// Placeholder images with varied aspect ratios to simulate masonry
+// Real portfolio images in reverse order (jsp8 → jsp1)
 const PLACEHOLDERS = [
-  { id: 1, aspect: "aspect-[3/4]", label: "PIECE 01" },
-  { id: 2, aspect: "aspect-square", label: "PIECE 02" },
-  { id: 3, aspect: "aspect-[4/5]", label: "PIECE 03" },
-  { id: 4, aspect: "aspect-[2/3]", label: "PIECE 04" },
-  { id: 5, aspect: "aspect-[3/4]", label: "PIECE 05" },
-  { id: 6, aspect: "aspect-square", label: "PIECE 06" },
-  { id: 7, aspect: "aspect-[4/5]", label: "PIECE 07" },
-  { id: 8, aspect: "aspect-[3/4]", label: "PIECE 08" },
+  { id: 8, aspect: "aspect-[3/4]", label: "PIECE 08", src: "/portfolio/jsp8.jpg" },
+  { id: 7, aspect: "aspect-square", label: "PIECE 07", src: "/portfolio/jsp7.jpg" },
+  { id: 6, aspect: "aspect-[4/5]", label: "PIECE 06", src: "/portfolio/jsp6.jpg" },
+  { id: 5, aspect: "aspect-[2/3]", label: "PIECE 05", src: "/portfolio/jsp5.jpg" },
+  { id: 4, aspect: "aspect-[3/4]", label: "PIECE 04", src: "/portfolio/jsp4.jpg" },
+  { id: 3, aspect: "aspect-square", label: "PIECE 03", src: "/portfolio/jsp3.jpg" },
+  { id: 2, aspect: "aspect-[4/5]", label: "PIECE 02", src: "/portfolio/jsp2.jpg" },
+  { id: 1, aspect: "aspect-[3/4]", label: "PIECE 01", src: "/portfolio/jsp1.jpg" },
 ];
 
 const fadeUp = {
@@ -66,24 +67,26 @@ export default function Portfolio() {
             className="break-inside-avoid mb-3 md:mb-4 group relative overflow-hidden cursor-pointer"
           >
             <div
-              className={`w-full ${item.aspect} bg-neutral-800 flex items-center justify-center relative`}
-              style={{
-                background:
-                  "linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 50%, #1a1a1a 100%)",
-              }}
+              className={`w-full ${item.aspect} relative overflow-hidden`}
             >
+              {/* Real tattoo image */}
+              <div className="absolute inset-0 transform scale-100 group-hover:scale-105 transition-transform duration-700">
+                <Image
+                  src={item.src}
+                  alt={item.label}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+              </div>
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-accent/0 group-hover:bg-accent/10 transition-all duration-500" />
-              {/* Scale on hover wrapper */}
-              <div className="absolute inset-0 transform scale-100 group-hover:scale-105 transition-transform duration-700">
-                <div className="w-full h-full bg-gradient-to-br from-neutral-700/20 to-transparent" />
-              </div>
-              {/* Label */}
-              <span className="relative z-10 text-white/20 font-body text-xs tracking-[0.3em] uppercase group-hover:text-white/40 transition-colors duration-300">
+              {/* Label — visible only on hover */}
+              <span className="absolute inset-0 z-10 flex items-center justify-center text-white/0 font-body text-xs tracking-[0.3em] uppercase group-hover:text-white/80 transition-colors duration-300">
                 {item.label}
               </span>
               {/* Number badge */}
-              <span className="absolute top-3 right-3 text-white/15 font-headline text-xs tracking-widest group-hover:text-white/30 transition-colors duration-300">
+              <span className="absolute top-3 right-3 z-10 text-white/0 font-headline text-xs tracking-widest group-hover:text-white/70 transition-colors duration-300">
                 {String(item.id).padStart(2, "0")}
               </span>
             </div>
