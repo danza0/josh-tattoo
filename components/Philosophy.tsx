@@ -1,10 +1,11 @@
 "use client";
 
 /**
- * Philosophy — Full-width dark quote section with portrait placeholder.
+ * Philosophy — Full-width dark quote section with Josh portrait.
  * Large italic serif quote + "PHILOSOPHY" label.
  */
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 export default function Philosophy() {
@@ -34,7 +35,7 @@ export default function Philosophy() {
           </p>
         </motion.div>
 
-        {/* Right — Portrait placeholder */}
+        {/* Right — Portrait */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -43,18 +44,21 @@ export default function Philosophy() {
           className="flex justify-center lg:justify-end"
         >
           <div
-            className="flex items-center justify-center"
+            className="relative overflow-hidden"
             style={{
               width: "clamp(220px, 40vw, 480px)",
               height: "clamp(280px, 50vw, 600px)",
-              background:
-                "linear-gradient(135deg, #1e1e1e 0%, #2a2826 100%)",
               borderRadius: "4px",
             }}
           >
-            <p className="text-white/20 text-xs tracking-[0.3em] uppercase font-body">
-              PORTRAIT
-            </p>
+            <Image
+              src="/portrait/josh-portrait.jpg"
+              alt="Josh Swid — Tattoo Artist"
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 80vw, 40vw"
+              priority={false}
+            />
           </div>
         </motion.div>
 
