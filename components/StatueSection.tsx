@@ -1,4 +1,4 @@
-"use client";
+use client;
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -7,16 +7,16 @@ import StatueModel from "./StatueModel";
 export default function StatueSection() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Local scroll for text overlays (keyed to the container's own scroll progress)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Scroll-driven Y-axis rotation for the video container (GPU-accelerated CSS transform)
-  const rotateY = useTransform(scrollYProgress, [0, 0.5, 1], ["-20deg", "0deg", "20deg"]);
+  // Frame sequence starts after hero overlap (first 1/3 is hero overlapping)
+  const HERO_OVERLAP_RATIO = 1 / 3;
+  const frameProgress = useTransform(scrollYProgress, [HERO_OVERLAP_RATIO, 1], [0, 1]);
 
-  // Text overlay keyframes remapped to the 0.33–1.0 active range
+  // Text overlay keyframes remapped to the 0.33-1.0 active range
   const aboutOpacity = useTransform(scrollYProgress, [0.33, 0.43, 0.57, 0.67], [0, 1, 1, 0]);
   const aboutY = useTransform(scrollYProgress, [0.33, 0.43], ["40px", "0px"]);
 
@@ -35,23 +35,12 @@ export default function StatueSection() {
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-        {/* Full-screen autoplay video bust — rotates on scroll via CSS rotateY */}
-        <div
-          className="absolute inset-0 z-0"
-          style={{ perspective: "1200px" }}
-        >
-          <motion.div
-            style={{
-              rotateY,
-              width: "100%",
-              height: "100%",
-              transformStyle: "preserve-3d",
-            }}
-          >
-            <StatueModel
-              style={{ width: "100%", height: "100%" }}
-            />
-          </motion.div>
+        {/* Full-screen scroll-driven image sequence bust */}
+        <div className="absolute inset-0 z-0">
+          <StatueModel
+            scrollYProgress={frameProgress}
+            style={{ width: "100%", height: "100%" }}
+          />
         </div>
 
         {/* ABOUT text */}
@@ -108,4 +97,3 @@ export default function StatueSection() {
     </section>
   );
 }
-
