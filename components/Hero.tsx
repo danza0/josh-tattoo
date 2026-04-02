@@ -6,14 +6,14 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative w-full h-screen overflow-hidden flex flex-col z-10"
+      className="relative w-full h-screen overflow-hidden flex flex-col z-0"
     >
-      {/* Hero headline — positioned in upper-center, behind the bust (z-0) */}
+      {/* Hero headline — upper-center, BEHIND the bust via z-index */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.4, ease: "easeOut" }}
-        className="absolute inset-x-0 top-[8%] flex items-start justify-center pointer-events-none select-none z-0"
+        className="absolute inset-x-0 top-[8%] flex items-start justify-center pointer-events-none select-none"
       >
         <h1
           className="hero-headline text-center text-text-primary leading-none w-full"
