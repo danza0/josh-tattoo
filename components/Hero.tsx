@@ -1,1 +1,69 @@
-use client\n\nimport { motion } from "framer-motion";\n\nexport default function Hero() {\n  return (\n    <section\n      id="hero"\n      className="relative w-full h-screen overflow-hidden flex flex-col z-10"\n    >\n      {/* Hero headline — positioned in upper-center, behind the bust (z-0) */}\n      <motion.div\n        initial={{ opacity: 0 }}\n        animate={{ opacity: 1 }}\n        transition={{ duration: 1.4, ease: "easeOut" }}\n        className="absolute inset-x-0 top-[8%] flex items-start justify-center pointer-events-none select-none z-0"\n      >\n        <h1\n          className="hero-headline text-center text-text-primary leading-none w-full"\n          style={{ fontSize: "clamp(2rem, 15vw, 22rem)", letterSpacing: "-0.04em" }}\n        >\n          JOSH SWID\n        </h1>\n      </motion.div>\n\n      {/* Bottom-left credit text */}\n      <motion.div\n        initial={{ opacity: 0, y: 10 }}\n        animate={{ opacity: 1, y: 0 }}\n        transition={{ duration: 1, delay: 0.8 }}\n        className="absolute bottom-8 left-6 md:left-10 z-20"\n      >\n        <p className="text-text-primary/60 text-xs tracking-widest uppercase leading-relaxed max-w-xs font-body">\n          Josh Swid, Vancouver-based Tattoo Artist\n          <br />\n          Guest Artist at Zen Tattoo Studio\n        </p>\n      </motion.div>\n\n      {/* Bottom-right scroll indicator */}\n      <motion.div\n        initial={{ opacity: 0 }}\n        animate={{ opacity: 1 }}\n        transition={{ duration: 1, delay: 1.2 }}\n        className="absolute bottom-8 right-6 md:right-10 z-20 flex flex-col items-center gap-2"\n      >\n        <p className="text-text-primary/60 text-xs tracking-widest uppercase font-body">\n          KEEP SCROLLING\n        </p>\n        <motion.div\n          animate={{ y: [0, 8, 0] }}\n          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}\n        >\n          <svg\n            width="14"\n            height="20"\n            viewBox="0 0 14 20"\n            fill="none"\n            stroke="currentColor"\n            strokeWidth="1.5"\n            className="text-text-primary/60"\n          >\n            <path d="M7 0v16M1 10l6 8 6-8" />\n          </svg>\n        </motion.div>\n      </motion.div>\n    </section>\n  );\n}
+"use client";
+
+import { motion } from "framer-motion";
+
+export default function Hero() {
+  return (
+    <section
+      id="hero"
+      className="relative w-full h-screen overflow-hidden flex flex-col z-10"
+    >
+      {/* Hero headline — positioned in upper-center, behind the bust (z-0) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.4, ease: "easeOut" }}
+        className="absolute inset-x-0 top-[8%] flex items-start justify-center pointer-events-none select-none z-0"
+      >
+        <h1
+          className="hero-headline text-center text-text-primary leading-none w-full"
+          style={{ fontSize: "clamp(2rem, 15vw, 22rem)", letterSpacing: "-0.04em" }}
+        >
+          JOSH SWID
+        </h1>
+      </motion.div>
+
+      {/* Bottom-left credit text */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.8 }}
+        className="absolute bottom-8 left-6 md:left-10 z-20"
+      >
+        <p className="text-text-primary/60 text-xs tracking-widest uppercase leading-relaxed max-w-xs font-body">
+          Josh Swid, Vancouver-based Tattoo Artist
+          <br />
+          Guest Artist at Zen Tattoo Studio
+        </p>
+      </motion.div>
+
+      {/* Bottom-right scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1.2 }}
+        className="absolute bottom-8 right-6 md:right-10 z-20 flex flex-col items-center gap-2"
+      >
+        <p className="text-text-primary/60 text-xs tracking-widest uppercase font-body">
+          KEEP SCROLLING
+        </p>
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <svg
+            width="14"
+            height="20"
+            viewBox="0 0 14 20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="text-text-primary/60"
+          >
+            <path d="M7 0v16M1 10l6 8 6-8" />
+          </svg>
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+}
