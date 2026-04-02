@@ -1,4 +1,4 @@
-"use client";
+use client;
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -30,13 +30,13 @@ export default function StatueSection() {
     <section
       id="about"
       ref={containerRef}
-      className="relative bg-bg-stone"
+      className="relative"
       style={{ height: "400vh", marginTop: "-100vh" }}
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-        {/* Full-screen scroll-driven image sequence bust */}
-        <div className="absolute inset-0 z-0">
+        {/* Full-screen scroll-driven image sequence bust — z-10 to render IN FRONT of hero headline */}
+        <div className="absolute inset-0 z-10">
           <StatueModel
             scrollYProgress={frameProgress}
             style={{ width: "100%", height: "100%" }}
