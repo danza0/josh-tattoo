@@ -9,7 +9,7 @@ export interface StatueModelProps {
   scrollYProgress?: MotionValue<number>;
 }
 
-const FRAME_COUNT = 90;
+const FRAME_COUNT = 270;
 const PLACEHOLDER_BG =
   "radial-gradient(ellipse at 50% 60%, #2a2520 0%, #1a1815 60%, transparent 100%)";
 
