@@ -18,7 +18,7 @@ const Portfolio = dynamic(() => import("@/components/Portfolio"));
 const BookingCTA = dynamic(() => import("@/components/BookingCTA"));
 const Process = dynamic(() => import("@/components/Process"));
 const Philosophy = dynamic(() => import("@/components/Philosophy"));
-const Studio = dynamic(() => import("@/components/Studio"));
+const TravelDates = dynamic(() => import("@/components/TravelDates"));
 const Availability = dynamic(() => import("@/components/Availability"));
 const InstagramFeed = dynamic(() => import("@/components/InstagramFeed"));
 const Testimonials = dynamic(() => import("@/components/Testimonials"));
@@ -37,7 +37,7 @@ export default function Home() {
         <BookingCTA />
         <Process />
         <Philosophy />
-        <Studio />
+        <TravelDates />
         <Availability />
         <InstagramFeed />
         <Testimonials />
