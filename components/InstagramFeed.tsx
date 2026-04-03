@@ -1,29 +1,25 @@
 "use client";
 
 /**
- * InstagramFeed — Scattered/asymmetric grid of IG placeholder images.
- * Dark background. Will be replaced with real IG content later.
+ * InstagramFeed — Embedded Instagram Reels from @joshswid.
+ * Visitors can play/pause reels directly on the site.
  */
 
 import { motion } from "framer-motion";
 
-const IG_IMAGES = [
-  { id: 1, label: "IG 1", colSpan: "col-span-2", rowSpan: "row-span-2" },
-  { id: 2, label: "IG 2", colSpan: "", rowSpan: "" },
-  { id: 3, label: "IG 3", colSpan: "", rowSpan: "row-span-2" },
-  { id: 4, label: "IG 4", colSpan: "", rowSpan: "" },
-  { id: 5, label: "IG 5", colSpan: "col-span-2", rowSpan: "" },
-  { id: 6, label: "IG 6", colSpan: "", rowSpan: "" },
-  { id: 7, label: "IG 7", colSpan: "", rowSpan: "row-span-2" },
-  { id: 8, label: "IG 8", colSpan: "", rowSpan: "" },
+const REELS = [
+  { id: "DU8pCbRlPxs" },
+  { id: "DWM6e9vjC1a" },
+  { id: "DVmBgBCD6BP" },
+  { id: "DJFtfGNTWF-" },
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, delay: i * 0.07, ease: "easeOut" as const },
+    transition: { duration: 0.7, delay: i * 0.12, ease: "easeOut" as const },
   }),
 };
 
@@ -42,64 +38,48 @@ export default function InstagramFeed() {
         Instagram
       </motion.h2>
 
-      {/* Asymmetric grid */}
-      <div className="grid grid-cols-3 md:grid-cols-4 auto-rows-[120px] md:auto-rows-[160px] gap-2 md:gap-3">
-        {IG_IMAGES.map((img, i) => (
+      {/* Reels grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        {REELS.map((reel, i) => (
           <motion.div
-            key={img.id}
+            key={reel.id}
             custom={i}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-30px" }}
             variants={fadeUp}
-            className={`${img.colSpan} ${img.rowSpan} group relative overflow-hidden cursor-pointer`}
+            className="relative w-full overflow-hidden rounded-sm bg-[#1a1a1a]"
+            style={{ aspectRatio: "9 / 16" }}
           >
-            <div
-              className="w-full h-full flex items-center justify-center group-hover:opacity-80 transition-opacity duration-300"
-              style={{
-                background:
-                  "linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 50%, #1a1a1a 100%)",
-              }}
-            >
-              {/* Instagram icon overlay on hover */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="1.5"
-                  className="opacity-60"
-                >
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <circle cx="12" cy="12" r="4" />
-                  <circle cx="17.5" cy="6.5" r="0.5" fill="white" />
-                </svg>
-              </div>
-              <span className="text-white/20 text-xs tracking-[0.3em] uppercase font-body group-hover:text-white/0 transition-colors duration-300">
-                {img.label}
-              </span>
-            </div>
+            <iframe
+              src={`https://www.instagram.com/reel/${reel.id}/embed`}
+              className="absolute inset-0 w-full h-full"
+              frameBorder="0"
+              scrolling="no"
+              allowTransparency
+              allow="encrypted-media"
+              allowFullScreen
+              title={`Instagram Reel ${reel.id}`}
+            />
           </motion.div>
         ))}
       </div>
 
-      {/* Instagram handle link */}
+      {/* Follow CTA */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="mt-10 flex justify-center"
+        transition={{ duration: 0.6, delay: 0.4 }}
+        className="mt-14 flex justify-center"
       >
         <a
-          href="https://instagram.com"
+          href="https://instagram.com/joshswid"
           target="_blank"
           rel="noopener noreferrer"
           className="text-text-muted text-xs tracking-widest uppercase font-body hover:text-accent transition-colors duration-300 flex items-center gap-2"
         >
-          Follow on Instagram ↗
+          FOLLOW ON INSTAGRAM ↗
         </a>
       </motion.div>
     </section>
