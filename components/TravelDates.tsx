@@ -2,7 +2,7 @@
 
 /**
  * TravelDates — "ON THE ROAD." section for upcoming guest spots and travel dates.
- * Dark background, gold accent, staggered card animations.
+ * Light background, gold accent, staggered card animations.
  */
 
 import { motion } from "framer-motion";
@@ -77,7 +77,7 @@ const cardVariants = {
 
 export default function TravelDates() {
   return (
-    <section id="travel" className="bg-bg-dark py-24 md:py-32 px-6 md:px-10 lg:px-16">
+    <section id="travel" className="bg-bg-light py-24 md:py-32 px-6 md:px-10 lg:px-16">
       <div className="max-w-5xl mx-auto">
 
         {/* Section label */}
@@ -97,7 +97,7 @@ export default function TravelDates() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="hero-headline text-text-light leading-none mb-6"
+          className="hero-headline text-text-primary leading-none mb-6"
           style={{ fontSize: "clamp(2.5rem, 8vw, 8rem)" }}
         >
           ON THE
@@ -131,7 +131,7 @@ export default function TravelDates() {
               <motion.div
                 key={entry.id}
                 variants={cardVariants}
-                className={`border border-text-light/10 p-6 md:p-8 flex flex-col gap-4 transition-opacity duration-300 ${
+                className={`border border-text-primary/10 p-6 md:p-8 flex flex-col gap-4 transition-opacity duration-300 ${
                   isCompleted ? "opacity-40" : "opacity-100"
                 }`}
               >
@@ -140,8 +140,8 @@ export default function TravelDates() {
                   <p
                     className={`font-headline font-black uppercase leading-none ${
                       isCompleted
-                        ? "text-text-muted/50 line-through decoration-text-muted/30"
-                        : "text-text-light"
+                        ? "text-text-muted/40 line-through decoration-text-muted/30"
+                        : "text-text-primary"
                     }`}
                     style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)" }}
                   >
@@ -162,7 +162,7 @@ export default function TravelDates() {
                 </p>
 
                 {/* Date range */}
-                <p className="font-serif italic text-text-light/70 text-base">
+                <p className="font-serif italic text-text-primary/70 text-base">
                   {entry.dates}
                 </p>
               </motion.div>
