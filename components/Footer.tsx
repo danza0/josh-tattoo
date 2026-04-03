@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { label: "Work", href: "#work" },
   { label: "About", href: "#about" },
   { label: "Process", href: "#process" },
-  { label: "Studio", href: "#studio" },
+  { label: "Travel", href: "#travel" },
   { label: "Book", href: "#availability" },
 ];
 
@@ -100,7 +100,7 @@ export default function Footer() {
           <ul className="flex flex-col gap-3">
             <li>
               <a
-                href="https://instagram.com"
+                href="https://instagram.com/joshswid"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-body text-text-light/70 hover:text-accent transition-colors duration-300 flex items-center gap-1"
@@ -126,8 +126,8 @@ export default function Footer() {
           </p>
           <p className="text-sm font-body text-text-light/60 leading-relaxed">
             Vancouver-based tattoo artist specialising in fine line, sacred
-            geometry, and classical realism. Currently guest artist at Zen
-            Tattoo Studio, Oakville, ON.
+            geometry, and classical realism. Available for guest spots
+            worldwide.
           </p>
         </div>
       </motion.div>
