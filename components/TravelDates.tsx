@@ -77,7 +77,7 @@ const cardVariants = {
 
 export default function TravelDates() {
   return (
-    <section className="bg-bg-dark py-24 md:py-32 px-6 md:px-10 lg:px-16">
+    <section id="travel" className="bg-bg-dark py-24 md:py-32 px-6 md:px-10 lg:px-16">
       <div className="max-w-5xl mx-auto">
 
         {/* Section label */}
