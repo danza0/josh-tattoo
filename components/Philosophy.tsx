@@ -1,4 +1,4 @@
-use client;
+"use client";
 
 /**
  * Philosophy — Full-width dark quote section with Josh portrait.
