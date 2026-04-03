@@ -1,11 +1,10 @@
-"use client";
+use client;
 
 /**
  * Philosophy — Full-width dark quote section with Josh portrait.
  * Large italic serif quote + "PHILOSOPHY" label.
  */
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 
 export default function Philosophy() {
@@ -51,13 +50,11 @@ export default function Philosophy() {
               borderRadius: "4px",
             }}
           >
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/portrait/josh-portrait.jpg"
               alt="Josh Swid — Tattoo Artist"
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 80vw, 40vw"
-              priority={false}
+              className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
         </motion.div>
