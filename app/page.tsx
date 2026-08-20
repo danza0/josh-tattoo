@@ -11,6 +11,14 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import SmoothScroll from "@/components/SmoothScroll";
 
+// Content (Sanity CMS with hard-coded fallbacks)
+import {
+  getSiteContent,
+  getTravelDates,
+  getPortfolio,
+  getTestimonials,
+} from "@/lib/content";
+
 // Lazy-loaded below-fold sections
 const StatueSection = dynamic(() => import("@/components/StatueSection"));
 const Marquee = dynamic(() => import("@/components/Marquee"));
@@ -24,23 +32,34 @@ const InstagramFeed = dynamic(() => import("@/components/InstagramFeed"));
 const Testimonials = dynamic(() => import("@/components/Testimonials"));
 const Footer = dynamic(() => import("@/components/Footer"));
 
-export default function Home() {
+export default async function Home() {
+  const [site, travelDates, portfolio, testimonials] = await Promise.all([
+    getSiteContent(),
+    getTravelDates(),
+    getPortfolio(),
+    getTestimonials(),
+  ]);
+
   return (
     <SmoothScroll>
       <Navbar />
 
       <main>
         <Hero />
-        <StatueSection />
+        <StatueSection
+          about={site.about}
+          philosophyQuote={site.philosophyQuote}
+          sidenote={site.sidenote}
+        />
         <Marquee />
-        <Portfolio />
+        <Portfolio items={portfolio} />
         <BookingCTA />
         <Process />
         <Philosophy />
-        <TravelDates />
-        <Availability />
+        <TravelDates dates={travelDates} />
+        <Availability content={site.availability} />
         <InstagramFeed />
-        <Testimonials />
+        <Testimonials reviews={testimonials} />
       </main>
 
       <Footer />

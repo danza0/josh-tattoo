@@ -6,39 +6,7 @@
  */
 
 import { motion } from "framer-motion";
-
-const REVIEWS = [
-  {
-    id: 1,
-    text: "The best tattoo experience I've ever had. Josh's attention to detail is unmatched.",
-    name: "Alex M.",
-    stars: 5,
-  },
-  {
-    id: 2,
-    text: "He turned my idea into something I never could have imagined. True artist.",
-    name: "Sarah K.",
-    stars: 5,
-  },
-  {
-    id: 3,
-    text: "Worth every minute of the consultation. The design process is what makes Josh different.",
-    name: "Marcus T.",
-    stars: 5,
-  },
-  {
-    id: 4,
-    text: "From concept to completion, the experience was unlike any other studio I've visited.",
-    name: "Olivia R.",
-    stars: 5,
-  },
-  {
-    id: 5,
-    text: "My tattoo feels like it was always meant to be on my body. The custom design process is incredible.",
-    name: "Daniel W.",
-    stars: 5,
-  },
-];
+import { DEFAULT_TESTIMONIALS, type Testimonial } from "@/lib/content-types";
 
 function StarRating({ count }: { count: number }) {
   return (
@@ -52,7 +20,11 @@ function StarRating({ count }: { count: number }) {
   );
 }
 
-export default function Testimonials() {
+export default function Testimonials({
+  reviews = DEFAULT_TESTIMONIALS,
+}: {
+  reviews?: Testimonial[];
+}) {
   return (
     <section className="py-24 px-0 overflow-hidden" style={{ background: "#eeebe7" }}>
       {/* Section title */}
@@ -73,9 +45,9 @@ export default function Testimonials() {
 
       {/* Horizontally scrollable cards */}
       <div className="flex gap-5 px-6 md:px-10 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-        {REVIEWS.map((review, i) => (
+        {reviews.map((review, i) => (
           <motion.article
-            key={review.id}
+            key={`${review.name}-${i}`}
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}

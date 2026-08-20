@@ -8,18 +8,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-
-// Real portfolio images in reverse order (jsp8 → jsp1)
-const PLACEHOLDERS = [
-  { id: 8, aspect: "aspect-[3/4]", label: "PIECE 08", src: "/portfolio/jsp8.jpg" },
-  { id: 7, aspect: "aspect-square", label: "PIECE 07", src: "/portfolio/jsp7.jpg" },
-  { id: 6, aspect: "aspect-[4/5]", label: "PIECE 06", src: "/portfolio/jsp6.jpg" },
-  { id: 5, aspect: "aspect-[2/3]", label: "PIECE 05", src: "/portfolio/jsp5.jpg" },
-  { id: 4, aspect: "aspect-[3/4]", label: "PIECE 04", src: "/portfolio/jsp4.jpg" },
-  { id: 3, aspect: "aspect-square", label: "PIECE 03", src: "/portfolio/jsp3.jpg" },
-  { id: 2, aspect: "aspect-[4/5]", label: "PIECE 02", src: "/portfolio/jsp2.jpg" },
-  { id: 1, aspect: "aspect-[3/4]", label: "PIECE 01", src: "/portfolio/jsp1.jpg" },
-];
+import { DEFAULT_PORTFOLIO, type PortfolioItem } from "@/lib/content-types";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -30,7 +19,11 @@ const fadeUp = {
   }),
 };
 
-export default function Portfolio() {
+export default function Portfolio({
+  items = DEFAULT_PORTFOLIO,
+}: {
+  items?: PortfolioItem[];
+}) {
   return (
     <section id="work" className="bg-bg-dark py-24 px-6 md:px-10 lg:px-16">
       {/* Section header */}
@@ -56,9 +49,9 @@ export default function Portfolio() {
 
       {/* Asymmetric masonry grid */}
       <div className="columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4">
-        {PLACEHOLDERS.map((item, i) => (
+        {items.map((item, i) => (
           <motion.div
-            key={item.id}
+            key={`${item.src}-${i}`}
             custom={i}
             initial="hidden"
             whileInView="visible"
@@ -87,7 +80,7 @@ export default function Portfolio() {
               </span>
               {/* Number badge */}
               <span className="absolute top-3 right-3 z-10 text-white/0 font-headline text-xs tracking-widest group-hover:text-white/70 transition-colors duration-300">
-                {String(item.id).padStart(2, "0")}
+                {String(i + 1).padStart(2, "0")}
               </span>
             </div>
           </motion.div>

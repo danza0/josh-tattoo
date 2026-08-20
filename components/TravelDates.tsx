@@ -6,47 +6,7 @@
  */
 
 import { motion } from "framer-motion";
-
-type TravelStatus = "BOOKING OPEN" | "WAITLIST" | "COMING SOON" | "COMPLETED";
-
-interface TravelDate {
-  id: number;
-  city: string;
-  studio: string;
-  dates: string;
-  status: TravelStatus;
-}
-
-const TRAVEL_DATES: TravelDate[] = [
-  {
-    id: 1,
-    city: "Miami, FL",
-    studio: "Grit City Tattoo",
-    dates: "May 15–18, 2025",
-    status: "BOOKING OPEN",
-  },
-  {
-    id: 2,
-    city: "Austin, TX",
-    studio: "Iron Brush Studio",
-    dates: "June 7–10, 2025",
-    status: "WAITLIST",
-  },
-  {
-    id: 3,
-    city: "Los Angeles, CA",
-    studio: "Covenant Tattoo",
-    dates: "July 20–23, 2025",
-    status: "COMING SOON",
-  },
-  {
-    id: 4,
-    city: "New York, NY",
-    studio: "Sacred Ink NYC",
-    dates: "April 1–4, 2025",
-    status: "COMPLETED",
-  },
-];
+import { DEFAULT_TRAVEL_DATES, type TravelStatus, type TravelDate } from "@/lib/content-types";
 
 const STATUS_STYLES: Record<TravelStatus, string> = {
   "BOOKING OPEN":
@@ -75,7 +35,11 @@ const cardVariants = {
   },
 };
 
-export default function TravelDates() {
+export default function TravelDates({
+  dates = DEFAULT_TRAVEL_DATES,
+}: {
+  dates?: TravelDate[];
+}) {
   return (
     <section id="travel" className="bg-bg-light py-24 md:py-32 px-6 md:px-10 lg:px-16">
       <div className="max-w-5xl mx-auto">
@@ -125,11 +89,11 @@ export default function TravelDates() {
           viewport={{ once: true, margin: "-40px" }}
           className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-16"
         >
-          {TRAVEL_DATES.map((entry) => {
+          {dates.map((entry, i) => {
             const isCompleted = entry.status === "COMPLETED";
             return (
               <motion.div
-                key={entry.id}
+                key={`${entry.city}-${i}`}
                 variants={cardVariants}
                 className={`border border-text-primary/10 p-6 md:p-8 flex flex-col gap-4 transition-opacity duration-300 ${
                   isCompleted ? "opacity-40" : "opacity-100"

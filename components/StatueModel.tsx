@@ -10,8 +10,19 @@ export interface StatueModelProps {
 }
 
 const FRAME_COUNT = 270;
-const PLACEHOLDER_BG =
-  "radial-gradient(ellipse at 50% 60%, #2a2520 0%, #1a1815 60%, transparent 100%)";
+
+/**
+ * The statue render is a 1920×1080 (16:9) frame with the bust centred and
+ * empty margins around it. On a wide screen a "cover" fit shows the whole
+ * bust; on a tall phone "cover" would zoom hard into the centre. So we scale
+ * the cover factor down a touch and anchor slightly above centre on small
+ * screens, keeping the whole bust — head to base — in view.
+ */
+function getFraming(viewportWidth: number): { zoom: number; focusY: number } {
+  if (viewportWidth < 640) return { zoom: 0.82, focusY: 0.42 };
+  if (viewportWidth < 1024) return { zoom: 0.9, focusY: 0.45 };
+  return { zoom: 1, focusY: 0.5 };
+}
 
 function framePath(index: number): string {
   return `/frames/${String(index + 1).padStart(4, "0")}.webp`;
@@ -24,100 +35,131 @@ export default function StatueModel({
 }: StatueModelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const imagesRef = useRef<HTMLImageElement[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const imagesRef = useRef<HTMLImageElement[]>(new Array(FRAME_COUNT));
+  const loadedRef = useRef<boolean[]>(new Array(FRAME_COUNT).fill(false));
   const currentFrameRef = useRef(0);
 
-  const drawFrame = useCallback((index: number) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    const img = imagesRef.current[index];
-    if (!canvas || !ctx || !img) return;
+  // `ready` flips true the moment the FIRST frame is on screen — we no longer
+  // wait for all 270 frames (~20 MB) before showing anything.
+  const [ready, setReady] = useState(false);
 
-    const container = containerRef.current;
-    if (container) {
-      const { width, height } = container.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  // Returns the requested frame if it's loaded, otherwise the nearest earlier
+  // loaded frame, so scrubbing never blanks out while later frames stream in.
+  const resolveFrame = useCallback((index: number): HTMLImageElement | null => {
+    const loaded = loadedRef.current;
+    if (loaded[index]) return imagesRef.current[index];
+    for (let i = index; i >= 0; i--) {
+      if (loaded[i]) return imagesRef.current[i];
+    }
+    for (let i = index + 1; i < FRAME_COUNT; i++) {
+      if (loaded[i]) return imagesRef.current[i];
+    }
+    return null;
+  }, []);
+
+  const drawFrame = useCallback(
+    (index: number) => {
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext("2d");
+      const container = containerRef.current;
+      const img = resolveFrame(index);
+      if (!canvas || !ctx || !img) return;
+
+      if (container) {
+        const { width, height } = container.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
+          canvas.width = width * dpr;
+          canvas.height = height * dpr;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
       }
-    }
 
-    const cw = canvas.width / (window.devicePixelRatio || 1);
-    const ch = canvas.height / (window.devicePixelRatio || 1);
-    const iw = img.naturalWidth;
-    const ih = img.naturalHeight;
-    const scale = Math.max(cw / iw, ch / ih);
-    const sw = iw * scale;
-    const sh = ih * scale;
-    const sx = (cw - sw) / 2;
-    const sy = (ch - sh) / 2;
+      const dpr = window.devicePixelRatio || 1;
+      const cw = canvas.width / dpr;
+      const ch = canvas.height / dpr;
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
 
-    ctx.clearRect(0, 0, cw, ch);
-    ctx.drawImage(img, sx, sy, sw, sh);
-  }, []);
+      const { zoom, focusY } = getFraming(cw);
+      const scale = Math.max(cw / iw, ch / ih) * zoom;
+      const sw = iw * scale;
+      const sh = ih * scale;
+      const sx = (cw - sw) / 2;
+      const sy = (ch - sh) * focusY;
 
-  // Preload all frames
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(img, sx, sy, sw, sh);
+    },
+    [resolveFrame]
+  );
+
+  // ── Progressive loading ──────────────────────────────────────────────
+  // 1. Load frame 0 first, draw it, reveal the canvas.
+  // 2. Then stream the remaining frames in order, in the background.
   useEffect(() => {
-    let loadedCount = 0;
-    const images: HTMLImageElement[] = new Array(FRAME_COUNT);
+    let cancelled = false;
 
-    for (let i = 0; i < FRAME_COUNT; i++) {
-      const img = new Image();
-      img.src = framePath(i);
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === FRAME_COUNT) {
-          imagesRef.current = images;
-          setIsLoaded(true);
-        }
-      };
-      img.onerror = () => {
-        loadedCount++;
-        if (loadedCount === FRAME_COUNT) {
-          imagesRef.current = images;
-          setIsLoaded(true);
-        }
-      };
-      images[i] = img;
-    }
-  }, []);
+    const markLoaded = (i: number, img: HTMLImageElement) => {
+      imagesRef.current[i] = img;
+      loadedRef.current[i] = true;
+    };
 
-  // Draw first frame once loaded
-  useEffect(() => {
-    if (isLoaded) {
+    const loadFrame = (i: number) =>
+      new Promise<void>((resolve) => {
+        const img = new Image();
+        img.decoding = "async";
+        img.onload = () => {
+          markLoaded(i, img);
+          resolve();
+        };
+        img.onerror = () => resolve();
+        img.src = framePath(i);
+      });
+
+    (async () => {
+      await loadFrame(0);
+      if (cancelled) return;
+      setReady(true);
       drawFrame(0);
-    }
-  }, [isLoaded, drawFrame]);
 
-  // Scroll-driven frame switching
+      // Stream the rest in order without blocking the reveal.
+      for (let i = 1; i < FRAME_COUNT; i++) {
+        if (cancelled) return;
+        await loadFrame(i);
+        // Keep the current view fresh if the user is already scrubbing.
+        if (i === currentFrameRef.current) drawFrame(i);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [drawFrame]);
+
+  // ── Scroll-driven frame switching ────────────────────────────────────
   useEffect(() => {
-    if (!scrollYProgress || !isLoaded) return;
-
+    if (!scrollYProgress || !ready) return;
     const unsubscribe = scrollYProgress.on("change", (v) => {
-      const frameIndex = Math.max(0, Math.min(Math.floor(v * FRAME_COUNT), FRAME_COUNT - 1));
+      const frameIndex = Math.max(
+        0,
+        Math.min(Math.floor(v * FRAME_COUNT), FRAME_COUNT - 1)
+      );
       if (frameIndex !== currentFrameRef.current) {
         currentFrameRef.current = frameIndex;
         drawFrame(frameIndex);
       }
     });
-
     return () => unsubscribe();
-  }, [scrollYProgress, isLoaded, drawFrame]);
+  }, [scrollYProgress, ready, drawFrame]);
 
-  // Handle resize
+  // ── Redraw on resize ─────────────────────────────────────────────────
   useEffect(() => {
-    if (!isLoaded) return;
-
-    function handleResize() {
-      drawFrame(currentFrameRef.current);
-    }
-
+    if (!ready) return;
+    const handleResize = () => drawFrame(currentFrameRef.current);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [isLoaded, drawFrame]);
+  }, [ready, drawFrame]);
 
   return (
     <div
@@ -131,24 +173,14 @@ export default function StatueModel({
         ...style,
       }}
     >
-      {!isLoaded && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: PLACEHOLDER_BG,
-          }}
-        />
-      )}
-
       <canvas
         ref={canvasRef}
         style={{
           width: "100%",
           height: "100%",
           display: "block",
-          opacity: isLoaded ? 1 : 0,
-          transition: "opacity 0.5s ease",
+          opacity: ready ? 1 : 0,
+          transition: "opacity 0.6s ease",
         }}
       />
     </div>

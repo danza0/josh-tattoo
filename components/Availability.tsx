@@ -6,16 +6,14 @@
  */
 
 import { motion } from "framer-motion";
+import { DEFAULT_SITE, type SiteContent } from "@/lib/content-types";
 
-const DETAILS = [
-  { label: "AVAILABLE", value: "May 18–31, 2026" },
-  { label: "STYLE", value: "Fine Line · Sacred Geometry · Black & Grey" },
-  { label: "SESSION RATE", value: "Contact for pricing" },
-  { label: "STUDIO", value: "Zen Tattoo · Oakville, ON" },
-  { label: "DEPOSIT", value: "Required to hold your date" },
-];
-
-export default function Availability() {
+export default function Availability({
+  content = DEFAULT_SITE.availability,
+}: {
+  content?: SiteContent["availability"];
+}) {
+  const { headlineScript, headlineBold, intro, details } = content;
   return (
     <section
       id="availability"
@@ -45,13 +43,13 @@ export default function Availability() {
             className="font-serif italic text-text-primary leading-snug"
             style={{ fontSize: "clamp(2.5rem, 7vw, 7rem)" }}
           >
-            Two weeks.
+            {headlineScript}
           </p>
           <p
             className="font-headline font-black text-text-primary leading-none"
             style={{ fontSize: "clamp(2rem, 5.5vw, 5.5rem)" }}
           >
-            10 SPOTS.
+            {headlineBold}
           </p>
         </motion.div>
 
@@ -63,9 +61,7 @@ export default function Availability() {
           transition={{ duration: 0.7, delay: 0.1 }}
           className="text-text-muted font-body text-base md:text-lg leading-relaxed mb-16 max-w-2xl"
         >
-          Josh has a finite number of sessions during his guest spot at Zen.
-          When they&apos;re filled, they&apos;re filled. No waitlist. Fill out the form
-          with your info and book your free consultation.
+          {intro}
         </motion.p>
 
         {/* Details table */}
@@ -76,7 +72,7 @@ export default function Availability() {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="divide-y divide-text-primary/10"
         >
-          {DETAILS.map((row) => (
+          {details.map((row) => (
             <div
               key={row.label}
               className="flex flex-col sm:flex-row sm:items-baseline py-5 gap-2 sm:gap-8"

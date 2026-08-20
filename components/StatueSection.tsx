@@ -1,29 +1,60 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import StatueModel from "./StatueModel";
+import { DEFAULT_SITE } from "@/lib/content-types";
 
-export default function StatueSection() {
+interface StatueSectionProps {
+  about?: string;
+  philosophyQuote?: string;
+  sidenote?: string;
+}
+
+export default function StatueSection({
+  about = DEFAULT_SITE.about,
+  philosophyQuote = DEFAULT_SITE.philosophyQuote,
+  sidenote = DEFAULT_SITE.sidenote,
+}: StatueSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Frame rotation starts immediately from the very first scroll
   const frameProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
-  // Text overlays appear in the second half of the scroll
-  const aboutOpacity = useTransform(scrollYProgress, [0.4, 0.5, 0.6, 0.7], [0, 1, 1, 0]);
-  const aboutY = useTransform(scrollYProgress, [0.4, 0.5], ["40px", "0px"]);
+  // On mobile the three overlays share the same bottom slot, so they must be
+  // fully sequential. On desktop they sit at different edges and may overlap.
+  const aboutRange = isMobile ? [0.3, 0.38, 0.5, 0.56] : [0.4, 0.5, 0.6, 0.7];
+  const sidenoteRange = isMobile ? [0.56, 0.63, 0.74, 0.8] : [0.55, 0.65, 0.75, 0.82];
+  const philosophyRange = isMobile ? [0.8, 0.87, 0.95, 1] : [0.75, 0.85, 0.93, 1];
 
-  const sidenoteOpacity = useTransform(scrollYProgress, [0.55, 0.65, 0.75, 0.82], [0, 1, 1, 0]);
-  const sidenoteY = useTransform(scrollYProgress, [0.55, 0.65], ["30px", "0px"]);
+  const aboutOpacity = useTransform(scrollYProgress, aboutRange, [0, 1, 1, 0]);
+  const aboutY = useTransform(scrollYProgress, [aboutRange[0], aboutRange[1]], ["40px", "0px"]);
 
-  const philosophyOpacity = useTransform(scrollYProgress, [0.75, 0.85, 0.93, 1], [0, 1, 1, 0]);
-  const philosophyY = useTransform(scrollYProgress, [0.75, 0.85], ["40px", "0px"]);
+  const sidenoteOpacity = useTransform(scrollYProgress, sidenoteRange, [0, 1, 1, 0]);
+  const sidenoteY = useTransform(scrollYProgress, [sidenoteRange[0], sidenoteRange[1]], ["30px", "0px"]);
+
+  const philosophyOpacity = useTransform(scrollYProgress, philosophyRange, [0, 1, 1, 0]);
+  const philosophyY = useTransform(scrollYProgress, [philosophyRange[0], philosophyRange[1]], ["40px", "0px"]);
+
+  // Card styling: on mobile every overlay gets a dark scrim + light text so it
+  // stays readable over the statue; on desktop it's plain text on the stone margin.
+  const cardBase =
+    "absolute z-20 rounded-sm p-5 bg-black/65 backdrop-blur-sm text-text-light " +
+    "md:bg-transparent md:backdrop-blur-none md:p-0 md:text-text-primary md:rounded-none";
+  const mobileBottomSlot = "left-4 right-4 bottom-24 max-w-none";
 
   return (
     <section
@@ -41,50 +72,42 @@ export default function StatueSection() {
           />
         </div>
 
+        {/* ABOUT */}
         <motion.div
           style={{ opacity: aboutOpacity, y: aboutY }}
-          className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 max-w-xs z-20"
+          className={`${cardBase} ${mobileBottomSlot} md:left-12 md:right-auto md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:max-w-xs`}
         >
-          <p className="text-xs tracking-widest uppercase text-text-muted font-body mb-4">
+          <p className="text-xs tracking-widest uppercase text-accent md:text-text-muted font-body mb-3 md:mb-4">
             ABOUT
           </p>
-          <p className="text-text-primary font-body leading-relaxed text-sm md:text-base">
-            Josh Swid is a Vancouver-based tattoo artist. Most of his work
-            happens before the needle touches skin. He draws from classical
-            mythology, Stoic philosophy, sacred geometry. Subjects with real
-            depth, built in black and grey, designed for your body specifically.
-            He doesn&apos;t do flash. Every piece is its own world.
+          <p className="font-body leading-relaxed text-sm md:text-base">
+            {about}
           </p>
         </motion.div>
 
+        {/* SIDENOTE — already a dark card; keep it dark on every breakpoint */}
         <motion.div
           style={{ opacity: sidenoteOpacity, y: sidenoteY }}
-          className="absolute right-6 md:right-12 bottom-16 max-w-[260px] z-20"
+          className="absolute z-20 rounded-sm p-5 bg-[#1a1815] text-[#f5f2ee] left-4 right-4 bottom-24 max-w-none md:left-auto md:right-12 md:bottom-16 md:max-w-[260px]"
         >
-          <div
-            className="p-5 rounded-sm"
-            style={{ background: "#1a1815", color: "#f5f2ee" }}
-          >
-            <p className="text-xs tracking-widest uppercase text-accent font-body mb-3">
-              SIDENOTE
-            </p>
-            <p className="text-sm font-body leading-relaxed opacity-80">
-              Each piece is custom designed — drawn for you alone. No flash. No
-              templates. Your tattoo exists nowhere else.
-            </p>
-          </div>
+          <p className="text-xs tracking-widest uppercase text-accent font-body mb-3">
+            SIDENOTE
+          </p>
+          <p className="text-sm font-body leading-relaxed opacity-80">
+            {sidenote}
+          </p>
         </motion.div>
 
+        {/* PHILOSOPHY */}
         <motion.div
           style={{ opacity: philosophyOpacity, y: philosophyY }}
-          className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 max-w-xs z-20"
+          className={`${cardBase} ${mobileBottomSlot} md:left-auto md:right-12 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:max-w-xs`}
         >
-          <p className="text-xs tracking-widest uppercase text-text-muted font-body mb-4">
+          <p className="text-xs tracking-widest uppercase text-accent md:text-text-muted font-body mb-3 md:mb-4">
             PHILOSOPHY
           </p>
-          <p className="text-text-primary font-body leading-relaxed text-sm md:text-base italic font-serif">
-            &ldquo;My approach to designing tattoos is intentional. It creates
-            space to think, refine, and allow you to commit with confidence.&rdquo;
+          <p className="font-body leading-relaxed text-sm md:text-base italic font-serif">
+            &ldquo;{philosophyQuote}&rdquo;
           </p>
         </motion.div>
 
