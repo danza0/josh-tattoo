@@ -30,14 +30,14 @@ export default function BookingCTA() {
         >
           <h2
             className="hero-headline text-text-primary leading-none group-hover:text-accent transition-colors duration-500 will-change-transform"
-            style={{ fontSize: "clamp(3.5rem, 11vw, 14rem)", letterSpacing: "-0.04em" }}
+            style={{ fontSize: "clamp(2.25rem, 11vw, 14rem)", letterSpacing: "-0.04em" }}
           >
             BOOK YOUR
           </h2>
           <h2
             className="hero-headline text-text-primary leading-none group-hover:text-accent transition-colors duration-500 will-change-transform"
             style={{
-              fontSize: "clamp(3.5rem, 11vw, 14rem)",
+              fontSize: "clamp(2.25rem, 11vw, 14rem)",
               letterSpacing: "-0.04em",
               WebkitTextStroke: "2px #111",
               WebkitTextFillColor: "transparent",
