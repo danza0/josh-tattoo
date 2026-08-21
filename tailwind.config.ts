@@ -6,6 +6,15 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  // Portfolio tile shapes come from data (defaults + Sanity), so these classes
+  // never appear literally in the source for Tailwind's JIT to find. Without
+  // this safelist they aren't generated and the tiles collapse to height 0.
+  safelist: [
+    "aspect-square",
+    "aspect-[3/4]",
+    "aspect-[4/5]",
+    "aspect-[2/3]",
+  ],
   theme: {
     extend: {
       colors: {
