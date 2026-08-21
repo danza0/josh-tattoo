@@ -1,7 +1,7 @@
 /**
  * page.tsx — Josh Swid tattoo artist personal brand website.
- * Single-page scroll experience with 12 sections.
- * All heavy components are lazy-loaded for performance.
+ * Single-page scroll experience. Content comes from Sanity (with hard-coded
+ * fallbacks); every section is driven by the `site` document below.
  */
 
 import dynamic from "next/dynamic";
@@ -42,28 +42,27 @@ export default async function Home() {
 
   return (
     <SmoothScroll>
-      <Navbar />
+      <Navbar site={site} />
 
       <main>
-        <Hero />
+        <Hero site={site} />
         <StatueSection
           about={site.about}
           philosophyQuote={site.philosophyQuote}
           sidenote={site.sidenote}
         />
-        <Marquee />
-        <Portfolio items={portfolio} />
-        <BookingCTA />
-        <Process />
-        <Philosophy />
-        <TravelDates dates={travelDates} />
-        <Availability content={site.availability} />
-        <InstagramFeed />
-        <Testimonials reviews={testimonials} />
+        <Marquee site={site} />
+        <Portfolio items={portfolio} site={site} />
+        <BookingCTA site={site} />
+        <Process site={site} />
+        <Philosophy site={site} />
+        <TravelDates dates={travelDates} site={site} />
+        <Availability site={site} />
+        <InstagramFeed site={site} />
+        <Testimonials reviews={testimonials} site={site} />
       </main>
 
-      <Footer />
+      <Footer site={site} />
     </SmoothScroll>
   );
 }
-

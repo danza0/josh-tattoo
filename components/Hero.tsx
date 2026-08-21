@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { DEFAULT_SITE, type SiteContent } from "@/lib/content-types";
 
-export default function Hero() {
+export default function Hero({ site = DEFAULT_SITE }: { site?: SiteContent }) {
   return (
     <section
       id="hero"
@@ -19,7 +20,7 @@ export default function Hero() {
           className="hero-headline text-center text-text-primary leading-none w-full"
           style={{ fontSize: "clamp(2rem, 15vw, 22rem)", letterSpacing: "-0.04em" }}
         >
-          JOSH SWID
+          {site.heroHeadline}
         </h1>
       </motion.div>
 
@@ -32,9 +33,9 @@ export default function Hero() {
         className="hidden md:block absolute bottom-8 left-6 md:left-10 z-20"
       >
         <p className="text-text-primary/60 text-xs tracking-widest uppercase leading-relaxed max-w-xs font-body">
-          Josh Swid, Vancouver-based Tattoo Artist
+          {site.heroCreditLine1}
           <br />
-          Guest Artist at Zen Tattoo Studio
+          {site.heroCreditLine2}
         </p>
       </motion.div>
 
@@ -46,7 +47,7 @@ export default function Hero() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-10 z-20 flex flex-col items-center gap-2"
       >
         <p className="text-text-primary/60 text-xs tracking-widest uppercase font-body">
-          KEEP SCROLLING
+          {site.scrollLabel}
         </p>
         <motion.div
           animate={{ y: [0, 8, 0] }}

@@ -8,7 +8,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { DEFAULT_PORTFOLIO, type PortfolioItem } from "@/lib/content-types";
+import { DEFAULT_PORTFOLIO, DEFAULT_SITE, type PortfolioItem, type SiteContent } from "@/lib/content-types";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -21,8 +21,10 @@ const fadeUp = {
 
 export default function Portfolio({
   items = DEFAULT_PORTFOLIO,
+  site = DEFAULT_SITE,
 }: {
   items?: PortfolioItem[];
+  site?: SiteContent;
 }) {
   return (
     <section id="work" className="bg-bg-dark py-24 px-6 md:px-10 lg:px-16">
@@ -38,12 +40,12 @@ export default function Portfolio({
           className="hero-headline text-text-light leading-none"
           style={{ fontSize: "clamp(3rem, 9vw, 10rem)" }}
         >
-          <span className="font-light opacity-60">THE</span>
+          <span className="font-light opacity-60">{site.workHeadingTop}</span>
           <br />
-          WORK.
+          {site.workHeadingBottom}
         </h2>
         <p className="mt-4 text-right text-text-muted text-sm tracking-widest uppercase font-body max-w-lg ml-auto">
-          Custom designed. One of one. No flash. No repeats.
+          {site.workSubtitle}
         </p>
       </motion.div>
 

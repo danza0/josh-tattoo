@@ -9,11 +9,11 @@ import { motion } from "framer-motion";
 import { DEFAULT_SITE, type SiteContent } from "@/lib/content-types";
 
 export default function Availability({
-  content = DEFAULT_SITE.availability,
+  site = DEFAULT_SITE,
 }: {
-  content?: SiteContent["availability"];
+  site?: SiteContent;
 }) {
-  const { headlineScript, headlineBold, intro, details } = content;
+  const { headlineScript, headlineBold, intro, details } = site.availability;
   return (
     <section
       id="availability"
@@ -28,7 +28,7 @@ export default function Availability({
           transition={{ duration: 0.6 }}
           className="text-xs tracking-widest uppercase text-text-muted font-body mb-12"
         >
-          03 — RESERVE YOUR SPOT
+          {site.availabilityLabel}
         </motion.p>
 
         {/* Giant mixed typography */}
@@ -96,10 +96,10 @@ export default function Availability({
           className="mt-16"
         >
           <a
-            href="#"
+            href={site.bookHref}
             className="inline-flex items-center gap-2 bg-text-primary text-text-light px-10 py-4 text-xs tracking-widest uppercase font-body hover:bg-accent transition-colors duration-400 font-medium"
           >
-            BOOK YOUR FREE CONSULTATION ↗
+            {site.availabilityCtaLabel}
           </a>
         </motion.div>
       </div>

@@ -6,7 +6,7 @@
  */
 
 import { motion } from "framer-motion";
-import { DEFAULT_TRAVEL_DATES, type TravelStatus, type TravelDate } from "@/lib/content-types";
+import { DEFAULT_TRAVEL_DATES, DEFAULT_SITE, type TravelStatus, type TravelDate, type SiteContent } from "@/lib/content-types";
 
 const STATUS_STYLES: Record<TravelStatus, string> = {
   "BOOKING OPEN":
@@ -37,8 +37,10 @@ const cardVariants = {
 
 export default function TravelDates({
   dates = DEFAULT_TRAVEL_DATES,
+  site = DEFAULT_SITE,
 }: {
   dates?: TravelDate[];
+  site?: SiteContent;
 }) {
   return (
     <section id="travel" className="bg-bg-light py-24 md:py-32 px-6 md:px-10 lg:px-16">
@@ -52,7 +54,7 @@ export default function TravelDates({
           transition={{ duration: 0.6 }}
           className="text-xs tracking-widest uppercase text-accent font-body mb-8"
         >
-          TRAVEL DATES
+          {site.travelLabel}
         </motion.p>
 
         {/* Headline */}
@@ -64,9 +66,9 @@ export default function TravelDates({
           className="hero-headline text-text-primary leading-none mb-6"
           style={{ fontSize: "clamp(2.5rem, 8vw, 8rem)" }}
         >
-          ON THE
+          {site.travelHeadingTop}
           <br />
-          <span className="text-accent">ROAD.</span>
+          <span className="text-accent">{site.travelHeadingBottom}</span>
         </motion.h2>
 
         {/* Tagline */}
@@ -77,8 +79,7 @@ export default function TravelDates({
           transition={{ duration: 0.7, delay: 0.15 }}
           className="text-text-muted font-body text-sm md:text-base tracking-wide max-w-lg mb-16 leading-relaxed"
         >
-          Upcoming travel dates and guest spot appearances.
-          Limited availability at each location.
+          {site.travelTagline}
         </motion.p>
 
         {/* Cards grid */}
@@ -142,10 +143,10 @@ export default function TravelDates({
           transition={{ duration: 0.7, delay: 0.2 }}
         >
           <a
-            href="#"
+            href={site.bookHref}
             className="inline-flex items-center gap-2 border border-accent text-accent px-10 py-4 text-xs tracking-widest uppercase font-body hover:bg-accent hover:text-bg-dark transition-colors duration-300 font-medium"
           >
-            INQUIRE ABOUT TRAVEL DATES ↗
+            {site.travelCtaLabel}
           </a>
         </motion.div>
 

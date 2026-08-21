@@ -6,12 +6,11 @@
  * Dark background, all-caps condensed text.
  */
 
-const TICKER_CONTENT =
-  "FINE LINE · SACRED GEOMETRY · CLASSICAL REALISM · BLACK & GREY · MEMENTO VIVERE · JOSH SWID · VANCOUVER · ZEN TATTOO · CUSTOM ONLY";
+import { DEFAULT_SITE, type SiteContent } from "@/lib/content-types";
 
-export default function Marquee() {
+export default function Marquee({ site = DEFAULT_SITE }: { site?: SiteContent }) {
   // Double the content so seamless looping looks natural
-  const repeated = `${TICKER_CONTENT}   ${TICKER_CONTENT}   `;
+  const repeated = `${site.marqueeText}   ${site.marqueeText}   `;
 
   return (
     <section aria-label="Style tags ticker" className="overflow-hidden bg-bg-dark py-5">

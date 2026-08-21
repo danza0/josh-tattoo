@@ -6,29 +6,7 @@
  */
 
 import { motion } from "framer-motion";
-
-const STEPS = [
-  {
-    number: "01",
-    title: "INQUIRY",
-    body: "Submit the form. Share your concept, placement, and scale. Josh reviews every request personally.",
-  },
-  {
-    number: "02",
-    title: "CONSULTATION",
-    body: "A focused conversation about your vision. Josh develops the concept collaboratively. The design begins here.",
-  },
-  {
-    number: "03",
-    title: "DESIGN",
-    body: "Custom artwork drawn for you alone. No flash. No templates. Your piece exists nowhere else.",
-  },
-  {
-    number: "04",
-    title: "TATTOO DAY",
-    body: "Your session at the studio. Once spots are filled, the window closes.",
-  },
-];
+import { DEFAULT_SITE, type SiteContent } from "@/lib/content-types";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -39,7 +17,8 @@ const fadeUp = {
   }),
 };
 
-export default function Process() {
+export default function Process({ site = DEFAULT_SITE }: { site?: SiteContent }) {
+  const STEPS = site.processSteps;
   return (
     <section id="process" className="bg-bg-light py-24 px-6 md:px-10 lg:px-16">
       {/* Section label */}
@@ -50,7 +29,7 @@ export default function Process() {
         transition={{ duration: 0.6 }}
         className="text-xs tracking-widest uppercase text-text-muted font-body mb-12"
       >
-        02 — THE PROCESS
+        {site.processLabel}
       </motion.p>
 
       {/* 4-column grid */}
