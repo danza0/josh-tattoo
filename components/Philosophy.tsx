@@ -6,8 +6,9 @@
  */
 
 import { motion } from "framer-motion";
+import { DEFAULT_SITE, type SiteContent } from "@/lib/content-types";
 
-export default function Philosophy() {
+export default function Philosophy({ site = DEFAULT_SITE }: { site?: SiteContent }) {
   return (
     <section className="bg-bg-dark py-24 md:py-32 px-6 md:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -26,11 +27,10 @@ export default function Philosophy() {
             className="text-text-light font-serif italic leading-snug"
             style={{ fontSize: "clamp(1.4rem, 3.5vw, 3rem)" }}
           >
-            &ldquo;My approach to designing tattoos is intentional. It creates
-            space to think, refine, and allow you to commit with confidence.&rdquo;
+            &ldquo;{site.philosophyQuote}&rdquo;
           </blockquote>
           <p className="mt-8 text-text-muted text-xs tracking-widest uppercase font-body">
-            — Josh Swid
+            {site.philosophyAttribution}
           </p>
         </motion.div>
 
@@ -52,7 +52,7 @@ export default function Philosophy() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/portrait/josh-portrait.jpg"
+              src={site.portraitUrl}
               alt="Josh Swid — Tattoo Artist"
               className="absolute inset-0 w-full h-full object-cover"
             />

@@ -8,16 +8,10 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { DEFAULT_SITE, type SiteContent } from "@/lib/content-types";
 
-const NAV_LINKS = [
-  { label: "Work", href: "#work" },
-  { label: "About", href: "#about" },
-  { label: "Process", href: "#process" },
-  { label: "Travel", href: "#travel" },
-  { label: "Book", href: "#availability" },
-];
-
-export default function Footer() {
+export default function Footer({ site = DEFAULT_SITE }: { site?: SiteContent }) {
+  const NAV_LINKS = site.navLinks;
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
@@ -43,7 +37,7 @@ export default function Footer() {
         {/* Column 1 — Email subscribe */}
         <div>
           <p className="text-xs tracking-widest uppercase text-text-muted font-body mb-6">
-            STAY CONNECTED
+            {site.footerSubscribeHeading}
           </p>
           {submitted ? (
             <p className="text-accent text-sm font-body">
@@ -100,7 +94,7 @@ export default function Footer() {
           <ul className="flex flex-col gap-3">
             <li>
               <a
-                href="https://instagram.com/joshswid"
+                href={site.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-body text-text-light/70 hover:text-accent transition-colors duration-300 flex items-center gap-1"
@@ -110,7 +104,7 @@ export default function Footer() {
             </li>
             <li>
               <a
-                href="mailto:josh@joshswid.com"
+                href={`mailto:${site.contactEmail}`}
                 className="text-sm font-body text-text-light/70 hover:text-accent transition-colors duration-300 flex items-center gap-1"
               >
                 Email ↗
@@ -125,9 +119,7 @@ export default function Footer() {
             DETAILS
           </p>
           <p className="text-sm font-body text-text-light/60 leading-relaxed">
-            Vancouver-based tattoo artist specialising in fine line, sacred
-            geometry, and classical realism. Available for guest spots
-            worldwide.
+            {site.footerDetails}
           </p>
         </div>
       </motion.div>
@@ -135,7 +127,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-text-light/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
         <p className="text-text-muted text-xs font-body tracking-wide">
-          © 2026 Josh Swid · All Rights Reserved
+          {site.copyright}
         </p>
         <button
           onClick={scrollToTop}

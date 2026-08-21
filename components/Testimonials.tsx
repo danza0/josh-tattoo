@@ -6,7 +6,7 @@
  */
 
 import { motion } from "framer-motion";
-import { DEFAULT_TESTIMONIALS, type Testimonial } from "@/lib/content-types";
+import { DEFAULT_TESTIMONIALS, DEFAULT_SITE, type Testimonial, type SiteContent } from "@/lib/content-types";
 
 function StarRating({ count }: { count: number }) {
   return (
@@ -22,8 +22,10 @@ function StarRating({ count }: { count: number }) {
 
 export default function Testimonials({
   reviews = DEFAULT_TESTIMONIALS,
+  site = DEFAULT_SITE,
 }: {
   reviews?: Testimonial[];
+  site?: SiteContent;
 }) {
   return (
     <section className="py-24 px-0 overflow-hidden" style={{ background: "#eeebe7" }}>
@@ -39,7 +41,7 @@ export default function Testimonials({
           className="font-serif italic text-text-primary"
           style={{ fontSize: "clamp(2rem, 6vw, 5rem)" }}
         >
-          Collectors say
+          {site.testimonialsHeading}
         </h2>
       </motion.div>
 

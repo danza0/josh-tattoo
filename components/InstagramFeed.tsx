@@ -5,29 +5,7 @@
 
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-
-const REELS = [
-  {
-    id: 1,
-    src: "/reels/reel1.mp4",
-    link: "https://www.instagram.com/reel/DU8pCbRlPxs/",
-  },
-  {
-    id: 2,
-    src: "/reels/reel2.mp4",
-    link: "https://www.instagram.com/reel/DWM6e9vjC1a/",
-  },
-  {
-    id: 3,
-    src: "/reels/reel3.mp4",
-    link: "https://www.instagram.com/reel/DVmBgBCD6BP/",
-  },
-  {
-    id: 4,
-    src: "/reels/reel4.mp4",
-    link: "https://www.instagram.com/reel/DJFtfGNTWF-/",
-  },
-];
+import { DEFAULT_SITE, type SiteContent } from "@/lib/content-types";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -145,7 +123,8 @@ function ReelPlayer({
   );
 }
 
-export default function InstagramFeed() {
+export default function InstagramFeed({ site = DEFAULT_SITE }: { site?: SiteContent }) {
+  const reels = site.reels;
   return (
     <section className="bg-bg-dark py-24 px-6 md:px-10 lg:px-16">
       {/* Section title */}
@@ -157,13 +136,13 @@ export default function InstagramFeed() {
         className="font-serif italic text-text-light mb-14"
         style={{ fontSize: "clamp(2rem, 6vw, 6rem)" }}
       >
-        Instagram
+        {site.instagramHeading}
       </motion.h2>
 
       {/* Reels grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {REELS.map((reel, i) => (
-          <ReelPlayer key={reel.id} src={reel.src} link={reel.link} index={i} />
+        {reels.map((reel, i) => (
+          <ReelPlayer key={`${reel.src}-${i}`} src={reel.src} link={reel.link} index={i} />
         ))}
       </div>
 
@@ -176,12 +155,12 @@ export default function InstagramFeed() {
         className="mt-14 flex justify-center"
       >
         <a
-          href="https://instagram.com/joshswid"
+          href={site.instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="text-text-muted text-xs tracking-widest uppercase font-body hover:text-accent transition-colors duration-300 flex items-center gap-2"
         >
-          FOLLOW ON INSTAGRAM ↗
+          {site.instagramFollowLabel}
         </a>
       </motion.div>
     </section>

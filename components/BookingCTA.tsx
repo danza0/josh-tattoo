@@ -7,17 +7,18 @@
  */
 
 import { motion } from "framer-motion";
+import { DEFAULT_SITE, type SiteContent } from "@/lib/content-types";
 
-export default function BookingCTA() {
+export default function BookingCTA({ site = DEFAULT_SITE }: { site?: SiteContent }) {
   return (
     <section
       className="bg-bg-light py-20 md:py-28 px-4 md:px-10 overflow-hidden"
     >
       <a
-        href="#availability"
+        href={site.bookHref}
         onClick={(e) => {
           e.preventDefault();
-          document.querySelector("#availability")?.scrollIntoView({ behavior: "smooth" });
+          document.querySelector(site.bookHref)?.scrollIntoView({ behavior: "smooth" });
         }}
         className="block group cursor-pointer"
         aria-label="Book your experience"
@@ -32,7 +33,7 @@ export default function BookingCTA() {
             className="hero-headline text-text-primary leading-none group-hover:text-accent transition-colors duration-500 will-change-transform"
             style={{ fontSize: "clamp(2.25rem, 11vw, 14rem)", letterSpacing: "-0.04em" }}
           >
-            BOOK YOUR
+            {site.bookingLine1}
           </h2>
           <h2
             className="hero-headline text-text-primary leading-none group-hover:text-accent transition-colors duration-500 will-change-transform"
@@ -43,7 +44,7 @@ export default function BookingCTA() {
               WebkitTextFillColor: "transparent",
             }}
           >
-            EXPERIENCE
+            {site.bookingLine2}
           </h2>
         </motion.div>
 
@@ -55,7 +56,7 @@ export default function BookingCTA() {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="mt-8 text-text-muted text-sm tracking-widest uppercase font-body flex items-center gap-3"
         >
-          Reserve your spot
+          {site.bookingSubtext}
           <span className="text-accent text-xl">↗</span>
         </motion.p>
       </a>
