@@ -5,5 +5,7 @@ export const client = createClient({
   projectId: projectId || "placeholder",
   dataset,
   apiVersion,
-  useCdn: true,
+  // No CDN cache — the site reads the very latest published content so Studio
+  // edits appear immediately.
+  useCdn: false,
 });
