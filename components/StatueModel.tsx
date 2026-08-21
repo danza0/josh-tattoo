@@ -123,13 +123,24 @@ export default function StatueModel({
       setReady(true);
       drawFrame(0);
 
-      // Stream the rest in order without blocking the reveal.
-      for (let i = 1; i < FRAME_COUNT; i++) {
-        if (cancelled) return;
-        await loadFrame(i);
-        // Keep the current view fresh if the user is already scrubbing.
-        if (i === currentFrameRef.current) drawFrame(i);
-      }
+      // Stream the rest with real parallelism (a bounded pool) so all frames
+      // are ready within a couple of seconds — otherwise fast scrolling races
+      // ahead of the loader and the statue appears to freeze. Frames are still
+      // claimed in ascending order, so the ones you hit first load first.
+      const CONCURRENCY = 12;
+      let next = 1;
+      const worker = async () => {
+        while (!cancelled) {
+          const i = next++;
+          if (i >= FRAME_COUNT) return;
+          await loadFrame(i);
+          // Keep the current view fresh if the user is already scrubbing.
+          if (i === currentFrameRef.current) drawFrame(i);
+        }
+      };
+      await Promise.all(
+        Array.from({ length: CONCURRENCY }, () => worker())
+      );
     })();
 
     return () => {
