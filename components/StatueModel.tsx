@@ -38,10 +38,13 @@ export default function StatueModel({
   const imagesRef = useRef<HTMLImageElement[]>(new Array(FRAME_COUNT));
   const loadedRef = useRef<boolean[]>(new Array(FRAME_COUNT).fill(false));
   const currentFrameRef = useRef(0);
+  const readyOnceRef = useRef(false);
 
-  // `ready` flips true the moment the FIRST frame is on screen — we no longer
-  // wait for all 270 frames (~20 MB) before showing anything.
+  // `ready` flips true only once every frame is loaded, so scrubbing is smooth
+  // from the very first scroll (no racing ahead of the loader). While loading
+  // the canvas stays hidden over the plain stone background — no dark blob.
   const [ready, setReady] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   // Returns the requested frame if it's loaded, otherwise the nearest earlier
   // loaded frame, so scrubbing never blanks out while later frames stream in.
@@ -94,11 +97,21 @@ export default function StatueModel({
     [resolveFrame]
   );
 
-  // ── Progressive loading ──────────────────────────────────────────────
-  // 1. Load frame 0 first, draw it, reveal the canvas.
-  // 2. Then stream the remaining frames in order, in the background.
+  // ── Preload everything, then reveal ──────────────────────────────────
+  // Load all frames up front with a parallel pool (fast), and only show the
+  // statue once they're all in — so scrolling is smooth immediately. A safety
+  // timeout reveals anyway if a few frames are slow, and resolveFrame covers
+  // any that failed.
   useEffect(() => {
     let cancelled = false;
+    let settled = 0;
+
+    const reveal = () => {
+      if (cancelled || readyOnceRef.current) return;
+      readyOnceRef.current = true;
+      setReady(true);
+      drawFrame(currentFrameRef.current);
+    };
 
     const markLoaded = (i: number, img: HTMLImageElement) => {
       imagesRef.current[i] = img;
@@ -109,41 +122,39 @@ export default function StatueModel({
       new Promise<void>((resolve) => {
         const img = new Image();
         img.decoding = "async";
-        img.onload = () => {
-          markLoaded(i, img);
+        const done = () => {
+          settled++;
+          setProgress(settled / FRAME_COUNT);
           resolve();
         };
-        img.onerror = () => resolve();
+        img.onload = () => {
+          markLoaded(i, img);
+          done();
+        };
+        img.onerror = () => done();
         img.src = framePath(i);
       });
 
-    (async () => {
-      await loadFrame(0);
-      if (cancelled) return;
-      setReady(true);
-      drawFrame(0);
+    // Reveal anyway after 12s even if a handful of frames never resolve.
+    const safety = setTimeout(reveal, 12000);
 
-      // Stream the rest with real parallelism (a bounded pool) so all frames
-      // are ready within a couple of seconds — otherwise fast scrolling races
-      // ahead of the loader and the statue appears to freeze. Frames are still
-      // claimed in ascending order, so the ones you hit first load first.
-      const CONCURRENCY = 12;
-      let next = 1;
+    (async () => {
+      const CONCURRENCY = 16;
+      let next = 0;
       const worker = async () => {
         while (!cancelled) {
           const i = next++;
           if (i >= FRAME_COUNT) return;
           await loadFrame(i);
-          // Keep the current view fresh if the user is already scrubbing.
-          if (i === currentFrameRef.current) drawFrame(i);
         }
       };
-      await Promise.all(
-        Array.from({ length: CONCURRENCY }, () => worker())
-      );
+      await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
+      clearTimeout(safety);
+      reveal();
     })();
 
     return () => {
+      clearTimeout(safety);
       cancelled = true;
     };
   }, [drawFrame]);
@@ -194,6 +205,34 @@ export default function StatueModel({
           transition: "opacity 0.6s ease",
         }}
       />
+
+      {/* Slim, understated loading bar — shown only while frames preload, so
+          the empty space doesn't look broken. No dark placeholder. */}
+      {!ready && (
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: "50%",
+            bottom: "18%",
+            transform: "translateX(-50%)",
+            width: "120px",
+            height: "2px",
+            background: "rgba(17,17,17,0.12)",
+            overflow: "hidden",
+            borderRadius: "2px",
+          }}
+        >
+          <div
+            style={{
+              height: "100%",
+              width: `${Math.round(progress * 100)}%`,
+              background: "#c9a96e",
+              transition: "width 0.2s ease",
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

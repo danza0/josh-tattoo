@@ -22,7 +22,9 @@ import {
   type Reel,
 } from "./content-types";
 
-const FETCH_OPTS = { next: { revalidate: 60 } } as const;
+// Always read fresh so a published edit in the Studio shows on the next page
+// load (no ISR delay). Traffic is low, so per-request reads are fine.
+const FETCH_OPTS = { cache: "no-store" } as const;
 
 async function safeFetch<T>(query: string): Promise<T | null> {
   if (!hasSanity) return null;
