@@ -29,6 +29,18 @@ export default function Preloader() {
       window.setTimeout(() => setGone(true), 650);
     };
 
+    // Mobile shows a static statue image (not the frame sequence), so there's
+    // nothing heavy to preload — show a brief intro and reveal.
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    if (isMobile) {
+      setProgress(1);
+      const t = window.setTimeout(exit, 650);
+      return () => {
+        window.clearTimeout(t);
+        html.style.overflow = prevOverflow;
+      };
+    }
+
     const unsub = onFrameProgress(setProgress);
     preloadFrames().then(exit);
     // Safety: never trap the visitor if a few frames stall.
