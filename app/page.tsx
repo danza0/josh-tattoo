@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import SmoothScroll from "@/components/SmoothScroll";
+import Preloader from "@/components/Preloader";
 
 // Content (Sanity CMS with hard-coded fallbacks)
 import {
@@ -41,7 +42,9 @@ export default async function Home() {
   ]);
 
   return (
-    <SmoothScroll>
+    <>
+      <Preloader />
+      <SmoothScroll>
       <Navbar site={site} />
 
       <main>
@@ -63,6 +66,7 @@ export default async function Home() {
       </main>
 
       <Footer site={site} />
-    </SmoothScroll>
+      </SmoothScroll>
+    </>
   );
 }
