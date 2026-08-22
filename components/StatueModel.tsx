@@ -57,21 +57,23 @@ export default function StatueModel({
       const ctx = canvas?.getContext("2d");
       const container = containerRef.current;
       const img = resolveFrame(index);
-      if (!canvas || !ctx || !img) return;
+      if (!canvas || !ctx || !container || !img) return;
 
-      if (container) {
-        const { width, height } = container.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
-          canvas.width = width * dpr;
-          canvas.height = height * dpr;
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-      }
+      // Size + framing come from the live container rect every draw, and the
+      // transform is reset unconditionally — so a stale/half-scale transform can
+      // never persist (which was drawing the statue into a corner on mobile).
+      const rect = container.getBoundingClientRect();
+      const cw = rect.width;
+      const ch = rect.height;
+      if (cw === 0 || ch === 0) return;
 
       const dpr = window.devicePixelRatio || 1;
-      const cw = canvas.width / dpr;
-      const ch = canvas.height / dpr;
+      const bw = Math.round(cw * dpr);
+      const bh = Math.round(ch * dpr);
+      if (canvas.width !== bw) canvas.width = bw;
+      if (canvas.height !== bh) canvas.height = bh;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
       const iw = img.naturalWidth;
       const ih = img.naturalHeight;
 
@@ -96,7 +98,9 @@ export default function StatueModel({
       setReady(true);
       drawFrame(currentFrameRef.current);
     };
-    preloadFrames().then(reveal);
+    // Draw after layout has settled so the first frame fills the container.
+    const revealNextFrame = () => requestAnimationFrame(reveal);
+    preloadFrames().then(revealNextFrame);
     // Safety: reveal anyway if a few frames are slow to settle.
     const safety = setTimeout(reveal, 12000);
     return () => {
@@ -121,12 +125,25 @@ export default function StatueModel({
     return () => unsubscribe();
   }, [scrollYProgress, ready, drawFrame]);
 
-  // ── Redraw on resize ─────────────────────────────────────────────────
+  // ── Redraw whenever the container actually changes size ───────────────
+  // A ResizeObserver catches everything a window "resize" event misses on
+  // mobile: the address bar showing/hiding, orientation changes, and the
+  // layout settling right after the intro screen — the cases where the canvas
+  // was left mis-sized.
   useEffect(() => {
     if (!ready) return;
-    const handleResize = () => drawFrame(currentFrameRef.current);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const container = containerRef.current;
+    if (!container) return;
+    const redraw = () => drawFrame(currentFrameRef.current);
+    const ro = new ResizeObserver(redraw);
+    ro.observe(container);
+    window.addEventListener("resize", redraw);
+    window.addEventListener("orientationchange", redraw);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", redraw);
+      window.removeEventListener("orientationchange", redraw);
+    };
   }, [ready, drawFrame]);
 
   return (
