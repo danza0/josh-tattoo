@@ -19,7 +19,7 @@ A premium, immersive personal brand website for tattoo artist **Josh Swid**, ins
 5. **Booking CTA** — Giant typographic call to action
 6. **Process** — 4-step process grid
 7. **Philosophy** — Dark quote section with portrait placeholder
-8. **Studio** — "ZEN TATTOO." with studio image placeholders
+8. **Travel Dates** — "ON THE ROAD." tour stops and guest-spot dates
 9. **Availability** — Reserve your spot + details table
 10. **Instagram Feed** — Scattered grid placeholders
 11. **Testimonials** — "Collectors Say" horizontal scroll cards

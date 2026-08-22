@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Josh Swid — Vancouver Tattoo Artist",
   description:
-    "Josh Swid is a Vancouver-based tattoo artist specialising in fine line, sacred geometry, and classical realism. Currently guest artist at Zen Tattoo Studio, Oakville, ON.",
+    "Josh Swid is a Vancouver-based tattoo artist specialising in fine line, sacred geometry, and classical realism. Independent artist touring worldwide.",
   keywords: [
     "tattoo artist",
     "Vancouver tattoo",
@@ -12,8 +12,8 @@ export const metadata: Metadata = {
     "sacred geometry",
     "classical realism",
     "Josh Swid",
-    "Zen Tattoo Studio",
-    "Oakville tattoo",
+    "touring tattoo artist",
+    "guest spot tattoo",
   ],
   openGraph: {
     title: "Josh Swid — Vancouver Tattoo Artist",

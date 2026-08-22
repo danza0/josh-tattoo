@@ -11,6 +11,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import SmoothScroll from "@/components/SmoothScroll";
 import Preloader from "@/components/Preloader";
+import InquiryModal from "@/components/InquiryModal";
 
 // Content (Sanity CMS with hard-coded fallbacks)
 import {
@@ -44,6 +45,7 @@ export default async function Home() {
   return (
     <>
       <Preloader />
+      <InquiryModal contactEmail={site.contactEmail} />
       <SmoothScroll>
       <Navbar site={site} />
 

@@ -7,6 +7,7 @@
 
 import { motion } from "framer-motion";
 import { DEFAULT_TRAVEL_DATES, DEFAULT_SITE, type TravelStatus, type TravelDate, type SiteContent } from "@/lib/content-types";
+import { openInquiry } from "./InquiryModal";
 
 const STATUS_STYLES: Record<TravelStatus, string> = {
   "BOOKING OPEN":
@@ -142,12 +143,13 @@ export default function TravelDates({
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          <a
-            href={site.bookHref}
+          <button
+            type="button"
+            onClick={() => openInquiry("Travel Date Inquiry")}
             className="inline-flex items-center gap-2 border border-accent text-accent px-10 py-4 text-xs tracking-widest uppercase font-body hover:bg-accent hover:text-bg-dark transition-colors duration-300 font-medium"
           >
             {site.travelCtaLabel}
-          </a>
+          </button>
         </motion.div>
 
       </div>

@@ -7,6 +7,7 @@
 
 import { motion } from "framer-motion";
 import { DEFAULT_SITE, type SiteContent } from "@/lib/content-types";
+import { openInquiry } from "./InquiryModal";
 
 export default function Availability({
   site = DEFAULT_SITE,
@@ -95,12 +96,13 @@ export default function Availability({
           transition={{ duration: 0.7, delay: 0.3 }}
           className="mt-16"
         >
-          <a
-            href={site.bookHref}
+          <button
+            type="button"
+            onClick={() => openInquiry("Booking Inquiry")}
             className="inline-flex items-center gap-2 bg-text-primary text-text-light px-10 py-4 text-xs tracking-widest uppercase font-body hover:bg-accent transition-colors duration-400 font-medium"
           >
             {site.availabilityCtaLabel}
-          </a>
+          </button>
         </motion.div>
       </div>
     </section>
