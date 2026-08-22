@@ -147,11 +147,11 @@ export const DEFAULT_SITE: SiteContent = {
 
   heroHeadline: "JOSH SWID",
   heroCreditLine1: "Josh Swid, Vancouver-based Tattoo Artist",
-  heroCreditLine2: "Guest Artist at Zen Tattoo Studio",
+  heroCreditLine2: "Independent Artist · Touring Worldwide",
   scrollLabel: "KEEP SCROLLING",
 
   marqueeText:
-    "FINE LINE · SACRED GEOMETRY · CLASSICAL REALISM · BLACK & GREY · MEMENTO VIVERE · JOSH SWID · VANCOUVER · ZEN TATTOO · CUSTOM ONLY",
+    "FINE LINE · SACRED GEOMETRY · CLASSICAL REALISM · BLACK & GREY · MEMENTO VIVERE · JOSH SWID · VANCOUVER · TOURING WORLDWIDE · CUSTOM ONLY",
 
   about:
     "Josh Swid is a Vancouver-based tattoo artist. Most of his work happens before the needle touches skin. He draws from classical mythology, Stoic philosophy, sacred geometry. Subjects with real depth, built in black and grey, designed for your body specifically. He doesn’t do flash. Every piece is its own world.",
@@ -208,12 +208,12 @@ export const DEFAULT_SITE: SiteContent = {
     headlineScript: "Two weeks.",
     headlineBold: "10 SPOTS.",
     intro:
-      "Josh has a finite number of sessions during his guest spot at Zen. When they’re filled, they’re filled. No waitlist. Fill out the form with your info and book your free consultation.",
+      "Josh takes a limited number of sessions on each tour stop. When they’re filled, they’re filled. No waitlist. Fill out the form with your info and book your free consultation.",
     details: [
       { label: "AVAILABLE", value: "May 18–31, 2026" },
       { label: "STYLE", value: "Fine Line · Sacred Geometry · Black & Grey" },
       { label: "SESSION RATE", value: "Contact for pricing" },
-      { label: "STUDIO", value: "Zen Tattoo · Oakville, ON" },
+      { label: "LOCATION", value: "Traveling — see tour dates" },
       { label: "DEPOSIT", value: "Required to hold your date" },
     ],
   },
