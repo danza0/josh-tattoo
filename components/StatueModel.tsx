@@ -4,7 +4,6 @@ import React, { useRef, useEffect, useState, useCallback } from "react";
 import type { MotionValue } from "framer-motion";
 import {
   FRAME_COUNT,
-  framePath,
   getFrameImages,
   isFrameLoaded,
   preloadFrames,
@@ -29,9 +28,6 @@ function getFraming(viewportWidth: number): { zoom: number; focusY: number } {
   return { zoom: 1, focusY: 0.5 };
 }
 
-// A representative "front" frame used as the static mobile hero image.
-const STATIC_FRAME = framePath(0);
-
 export default function StatueModel({
   className,
   style,
@@ -42,22 +38,6 @@ export default function StatueModel({
   const currentFrameRef = useRef(0);
 
   const [ready, setReady] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Detect small screens. On mobile we render a static image instead of the
-  // scroll-scrubbed canvas — it renders reliably on every mobile browser and
-  // avoids downloading ~270 frames over mobile data.
-  useEffect(() => {
-    setMounted(true);
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  const desktopCanvas = mounted && !isMobile;
 
   const resolveFrame = useCallback((index: number): HTMLImageElement | null => {
     const imgs = getFrameImages();
@@ -75,6 +55,9 @@ export default function StatueModel({
       const img = resolveFrame(index);
       if (!canvas || !ctx || !container || !img) return;
 
+      // Size + framing come from the live container rect every draw, and the
+      // transform is reset unconditionally — so a stale/half-scale transform
+      // can never persist across devices or after the layout settles.
       const rect = container.getBoundingClientRect();
       const cw = rect.width;
       const ch = rect.height;
@@ -102,26 +85,33 @@ export default function StatueModel({
     [resolveFrame]
   );
 
-  // Preload frames + reveal — desktop only.
+  // Preload every frame, then reveal. A few staggered redraws after reveal
+  // catch the layout settling once the intro screen goes away (mobile toolbar,
+  // sticky positioning) — the moment the canvas used to end up mis-sized.
   useEffect(() => {
-    if (!desktopCanvas) return;
     let cancelled = false;
+    const timers: number[] = [];
+    const draw = () => drawFrame(currentFrameRef.current);
     const reveal = () => {
       if (cancelled) return;
       setReady(true);
-      drawFrame(currentFrameRef.current);
+      requestAnimationFrame(draw);
+      [80, 250, 600, 1200].forEach((d) =>
+        timers.push(window.setTimeout(draw, d))
+      );
     };
-    preloadFrames().then(() => requestAnimationFrame(reveal));
-    const safety = setTimeout(reveal, 12000);
+    preloadFrames().then(reveal);
+    const safety = window.setTimeout(reveal, 12000);
     return () => {
       cancelled = true;
-      clearTimeout(safety);
+      window.clearTimeout(safety);
+      timers.forEach((t) => window.clearTimeout(t));
     };
-  }, [desktopCanvas, drawFrame]);
+  }, [drawFrame]);
 
-  // Scroll-driven frame switching — desktop only.
+  // Scroll-driven frame switching.
   useEffect(() => {
-    if (!desktopCanvas || !scrollYProgress || !ready) return;
+    if (!scrollYProgress || !ready) return;
     const unsubscribe = scrollYProgress.on("change", (v) => {
       const frameIndex = Math.max(
         0,
@@ -133,11 +123,12 @@ export default function StatueModel({
       }
     });
     return () => unsubscribe();
-  }, [desktopCanvas, scrollYProgress, ready, drawFrame]);
+  }, [scrollYProgress, ready, drawFrame]);
 
-  // Redraw on real container size changes — desktop only.
+  // Redraw whenever the container actually changes size (address bar,
+  // orientation, post-intro settle).
   useEffect(() => {
-    if (!desktopCanvas || !ready) return;
+    if (!ready) return;
     const container = containerRef.current;
     if (!container) return;
     const redraw = () => drawFrame(currentFrameRef.current);
@@ -150,7 +141,7 @@ export default function StatueModel({
       window.removeEventListener("resize", redraw);
       window.removeEventListener("orientationchange", redraw);
     };
-  }, [desktopCanvas, ready, drawFrame]);
+  }, [ready, drawFrame]);
 
   return (
     <div
@@ -164,26 +155,16 @@ export default function StatueModel({
         ...style,
       }}
     >
-      {mounted && isMobile ? (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          src={STATIC_FRAME}
-          alt="Classical marble bust"
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ objectPosition: "center 38%" }}
-        />
-      ) : (
-        <canvas
-          ref={canvasRef}
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "block",
-            opacity: ready ? 1 : 0,
-            transition: "opacity 0.6s ease",
-          }}
-        />
-      )}
+      <canvas
+        ref={canvasRef}
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "block",
+          opacity: ready ? 1 : 0,
+          transition: "opacity 0.6s ease",
+        }}
+      />
     </div>
   );
 }

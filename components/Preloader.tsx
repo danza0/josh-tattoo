@@ -15,31 +15,17 @@ export default function Preloader() {
   const [gone, setGone] = useState(false);
 
   useEffect(() => {
-    // Lock scrolling while the intro is up.
-    const html = document.documentElement;
-    const prevOverflow = html.style.overflow;
-    html.style.overflow = "hidden";
-
+    // NOTE: we deliberately do NOT lock <html> overflow here. Doing so reflowed
+    // the page the instant the statue canvas first sized itself, which left the
+    // canvas mis-sized on mobile. The fixed full-screen overlay already hides
+    // the page during the brief load.
     let exited = false;
     const exit = () => {
       if (exited) return;
       exited = true;
-      html.style.overflow = prevOverflow;
       setExiting(true);
       window.setTimeout(() => setGone(true), 650);
     };
-
-    // Mobile shows a static statue image (not the frame sequence), so there's
-    // nothing heavy to preload — show a brief intro and reveal.
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    if (isMobile) {
-      setProgress(1);
-      const t = window.setTimeout(exit, 650);
-      return () => {
-        window.clearTimeout(t);
-        html.style.overflow = prevOverflow;
-      };
-    }
 
     const unsub = onFrameProgress(setProgress);
     preloadFrames().then(exit);
@@ -49,7 +35,6 @@ export default function Preloader() {
     return () => {
       unsub();
       window.clearTimeout(safety);
-      html.style.overflow = prevOverflow;
     };
   }, []);
 
